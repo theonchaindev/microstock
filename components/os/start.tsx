@@ -131,8 +131,14 @@ export function StartMenu({ onClose, autoFocus }: { onClose: () => void; autoFoc
               onClick={() => setAllPrograms((v) => !v)}
               className="flex w-full items-center gap-1.5 px-1.5 py-1 text-[11px] font-bold"
               style={{ color: "var(--text)" }}
-              onMouseEnter={(e) => (e.currentTarget.style.background = "var(--select)")}
-              onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = "var(--select)";
+                e.currentTarget.style.color = "var(--select-text)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = "transparent";
+                e.currentTarget.style.color = "var(--text)";
+              }}
             >
               <span className="flex-1 text-left">{allPrograms ? "Pinned programs" : "All Programs"}</span>
               <span
