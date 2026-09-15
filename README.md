@@ -4,7 +4,7 @@ A fully usable Windows 11 desktop in the browser, built as the front end for
 **$MSFT (Microstock)** — a Solana token that streams 1% of every trade straight
 to holders.
 
-Live: _(set after first deploy)_
+Live: **https://microstock-zeta.vercel.app**
 
 ## What's in it
 
