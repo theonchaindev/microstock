@@ -1,26 +1,161 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-inter), "Segoe UI Variable Text", "Segoe UI", system-ui, sans-serif;
+  --font-mono: var(--font-mono-stack), "Cascadia Code", "SF Mono", ui-monospace, monospace;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ---------------------------------------------------------------
+   Fluent / Windows 11 design tokens.  Dark is the default surface;
+   [data-theme="light"] restates every token so the toggle wins.
+   --------------------------------------------------------------- */
+:root,
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  /* Surfaces */
+  --surface-1: #202020;           /* window body — chart surface, validated */
+  --surface-2: #272727;           /* cards inside a window */
+  --surface-3: #2d2d2d;           /* raised / hover */
+  --mica: rgba(32, 32, 32, 0.88);
+  --acrylic: rgba(40, 40, 40, 0.95);
+  --taskbar: rgba(28, 28, 28, 0.86);
+
+  /* Ink */
+  --text-primary: #ffffff;
+  --text-secondary: rgba(255, 255, 255, 0.72);
+  --text-muted: rgba(255, 255, 255, 0.48);
+
+  /* Strokes */
+  --stroke: rgba(255, 255, 255, 0.08);
+  --stroke-strong: rgba(255, 255, 255, 0.16);
+  --divider: rgba(255, 255, 255, 0.06);
+
+  /* Accent */
+  --accent: #4cc2ff;
+  --accent-deep: #0078d4;
+  --on-accent: #00243b;
+
+  /* Status */
+  --good: #6ccb5f;
+  --bad: #ff6b6b;
+  --warn: #fcc02e;
+
+  /* Chart series — validated all-pairs on #202020 (blue / orange / aqua) */
+  --series-1: #3987e5;
+  --series-2: #d95926;
+  --series-3: #199e70;
+  --series-other: rgba(255, 255, 255, 0.22);
+  --grid: rgba(255, 255, 255, 0.07);
+
+  --shadow-window: 0 32px 64px rgba(0, 0, 0, 0.56), 0 2px 21px rgba(0, 0, 0, 0.4);
+  --shadow-flyout: 0 16px 40px rgba(0, 0, 0, 0.5);
+  --radius-win: 8px;
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+
+  --surface-1: #f9f9f9;
+  --surface-2: #ffffff;
+  --surface-3: #f0f0f0;
+  --mica: rgba(249, 249, 249, 0.9);
+  --acrylic: rgba(246, 246, 246, 0.96);
+  --taskbar: rgba(243, 243, 243, 0.88);
+
+  --text-primary: #1a1a1a;
+  --text-secondary: rgba(0, 0, 0, 0.62);
+  --text-muted: rgba(0, 0, 0, 0.44);
+
+  --stroke: rgba(0, 0, 0, 0.07);
+  --stroke-strong: rgba(0, 0, 0, 0.13);
+  --divider: rgba(0, 0, 0, 0.06);
+
+  --accent: #005fb8;
+  --accent-deep: #005fb8;
+  --on-accent: #ffffff;
+
+  --good: #0f7b34;
+  --bad: #c42b1c;
+  --warn: #9d5d00;
+
+  --series-1: #2a78d6;
+  --series-2: #eb6834;
+  --series-3: #1baf7a;
+  --series-other: rgba(0, 0, 0, 0.2);
+  --grid: rgba(0, 0, 0, 0.08);
+
+  --shadow-window: 0 32px 64px rgba(0, 0, 0, 0.18), 0 2px 21px rgba(0, 0, 0, 0.12);
+  --shadow-flyout: 0 16px 40px rgba(0, 0, 0, 0.16);
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  overscroll-behavior: none;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: #0a0a0a;
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  user-select: none;
+}
+
+button { font: inherit; color: inherit; }
+
+/* Fluent scrollbars ------------------------------------------------ */
+.scroll-fluent { scrollbar-width: thin; scrollbar-color: var(--stroke-strong) transparent; }
+.scroll-fluent::-webkit-scrollbar { width: 10px; height: 10px; }
+.scroll-fluent::-webkit-scrollbar-track { background: transparent; }
+.scroll-fluent::-webkit-scrollbar-thumb {
+  background: var(--stroke-strong);
+  border-radius: 99px;
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+.scroll-fluent::-webkit-scrollbar-thumb:hover { background: var(--text-muted); background-clip: content-box; }
+
+/* Reusable Fluent surfaces ---------------------------------------- */
+.mica {
+  background: var(--mica);
+  backdrop-filter: blur(48px) saturate(160%);
+  -webkit-backdrop-filter: blur(48px) saturate(160%);
+}
+.acrylic {
+  background: var(--acrylic);
+  backdrop-filter: blur(48px) saturate(170%);
+  -webkit-backdrop-filter: blur(48px) saturate(170%);
+}
+.card {
+  background: var(--surface-2);
+  border: 1px solid var(--stroke);
+  border-radius: 8px;
+}
+
+.tabular { font-variant-numeric: tabular-nums; }
+
+/* Animations ------------------------------------------------------- */
+@keyframes win-open   { from { opacity: 0; transform: scale(0.94) translateY(8px); } to { opacity: 1; transform: none; } }
+@keyframes flyout-up  { from { opacity: 0; transform: translateY(18px) scale(0.99); } to { opacity: 1; transform: none; } }
+@keyframes fade-in    { from { opacity: 0; } to { opacity: 1; } }
+@keyframes row-in     { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+@keyframes spin       { to { transform: rotate(360deg); } }
+@keyframes pulse-dot  { 0%,100% { opacity: 1; } 50% { opacity: 0.25; } }
+@keyframes caret      { 0%,49% { opacity: 1; } 50%,100% { opacity: 0; } }
+
+.anim-win    { animation: win-open 0.18s cubic-bezier(0.2, 0.9, 0.3, 1); }
+.anim-flyout { animation: flyout-up 0.22s cubic-bezier(0.1, 0.9, 0.2, 1); }
+.anim-fade   { animation: fade-in 0.35s ease; }
+.anim-row    { animation: row-in 0.3s ease; }
+.anim-caret  { animation: caret 1.05s steps(1) infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .anim-win, .anim-flyout, .anim-fade, .anim-row { animation: none !important; }
 }
