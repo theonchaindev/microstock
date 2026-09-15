@@ -19,14 +19,15 @@ export type Win = Rect & {
   payload?: string;
 };
 
-export type Wallpaper = "bloom" | "aurora" | "grid" | "ticker";
-export type Theme = "dark" | "light";
+export type Wallpaper = "bliss" | "azul" | "ticker" | "classic";
+/** The four schemes XP shipped with. */
+export type Theme = "blue" | "olive" | "silver" | "classic";
 
-type Settings = { theme: Theme; wallpaper: Wallpaper; accent: string };
+type Settings = { theme: Theme; wallpaper: Wallpaper };
 
 type State = { wins: Win[]; z: number; seq: number };
 
-export const DEFAULT_SETTINGS: Settings = { theme: "dark", wallpaper: "bloom", accent: "#4cc2ff" };
+export const DEFAULT_SETTINGS: Settings = { theme: "blue", wallpaper: "bliss" };
 
 type Action =
   | { type: "open"; appId: AppId; payload?: string; title?: string }
@@ -40,7 +41,7 @@ type Action =
 /** Cascade new windows so they never land exactly on top of each other. */
 function placement(app: (typeof APPS)[AppId], count: number, vw: number, vh: number): Rect {
   const maxW = Math.max(320, vw - 48);
-  const maxH = Math.max(280, vh - 108);
+  const maxH = Math.max(280, vh - 86);
   const w = Math.min(app.w, maxW);
   const h = Math.min(app.h, maxH);
   const off = (count % 6) * 28;
@@ -48,7 +49,7 @@ function placement(app: (typeof APPS)[AppId], count: number, vw: number, vh: num
     w,
     h,
     x: Math.max(12, Math.round((vw - w) / 2 - 90 + off)),
-    y: Math.max(12, Math.round((vh - h - 56) / 2 - 30 + off)),
+    y: Math.max(8, Math.round((vh - h - 38) / 2 - 24 + off)),
   };
 }
 
@@ -139,7 +140,7 @@ type Ctx = {
 
 const SystemContext = createContext<Ctx | null>(null);
 
-const STORE_KEY = "microstock.settings.v1";
+const STORE_KEY = "microstock.settings.v2";
 
 export function SystemProvider({ children }: { children: React.ReactNode }) {
   const [state, dispatch] = useReducer(reducer, { wins: [], z: 10, seq: 1 });
@@ -147,7 +148,6 @@ export function SystemProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     document.documentElement.dataset.theme = settings.theme;
-    document.documentElement.style.setProperty("--accent", settings.accent);
   }, [settings]);
 
   const topId = useMemo(() => {

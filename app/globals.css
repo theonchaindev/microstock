@@ -1,92 +1,181 @@
 @import "tailwindcss";
 
 @theme inline {
-  --font-sans: var(--font-inter), "Segoe UI Variable Text", "Segoe UI", system-ui, sans-serif;
-  --font-mono: var(--font-mono-stack), "Cascadia Code", "SF Mono", ui-monospace, monospace;
+  --font-sans: var(--font-ui);
+  --font-mono: "Lucida Console", Consolas, "DejaVu Sans Mono", "Courier New", monospace;
 }
 
-/* ---------------------------------------------------------------
-   Fluent / Windows 11 design tokens.  Dark is the default surface;
-   [data-theme="light"] restates every token so the toggle wins.
-   --------------------------------------------------------------- */
+/* ===================================================================
+   Windows XP — Luna.
+   Four schemes, exactly the ones XP shipped with: Blue, Olive Green,
+   Silver, and Windows Classic. Everything downstream reads tokens, so
+   switching scheme repaints the whole desktop.
+   =================================================================== */
+
 :root,
-:root[data-theme="dark"] {
-  color-scheme: dark;
-
-  /* Surfaces */
-  --surface-1: #202020;           /* window body — chart surface, validated */
-  --surface-2: #272727;           /* cards inside a window */
-  --surface-3: #2d2d2d;           /* raised / hover */
-  --mica: rgba(32, 32, 32, 0.88);
-  --acrylic: rgba(40, 40, 40, 0.95);
-  --taskbar: rgba(28, 28, 28, 0.86);
-
-  /* Ink */
-  --text-primary: #ffffff;
-  --text-secondary: rgba(255, 255, 255, 0.72);
-  --text-muted: rgba(255, 255, 255, 0.48);
-
-  /* Strokes */
-  --stroke: rgba(255, 255, 255, 0.08);
-  --stroke-strong: rgba(255, 255, 255, 0.16);
-  --divider: rgba(255, 255, 255, 0.06);
-
-  /* Accent */
-  --accent: #4cc2ff;
-  --accent-deep: #0078d4;
-  --on-accent: #00243b;
-
-  /* Status */
-  --good: #6ccb5f;
-  --bad: #ff6b6b;
-  --warn: #fcc02e;
-
-  /* Chart series — validated all-pairs on #202020 (blue / orange / aqua) */
-  --series-1: #3987e5;
-  --series-2: #d95926;
-  --series-3: #199e70;
-  --series-other: rgba(255, 255, 255, 0.22);
-  --grid: rgba(255, 255, 255, 0.07);
-
-  --shadow-window: 0 32px 64px rgba(0, 0, 0, 0.56), 0 2px 21px rgba(0, 0, 0, 0.4);
-  --shadow-flyout: 0 16px 40px rgba(0, 0, 0, 0.5);
-  --radius-win: 8px;
-}
-
-:root[data-theme="light"] {
+:root[data-theme="blue"] {
   color-scheme: light;
 
-  --surface-1: #f9f9f9;
-  --surface-2: #ffffff;
-  --surface-3: #f0f0f0;
-  --mica: rgba(249, 249, 249, 0.9);
-  --acrylic: rgba(246, 246, 246, 0.96);
-  --taskbar: rgba(243, 243, 243, 0.88);
+  --font-ui: Tahoma, "Segoe UI", Verdana, Geneva, sans-serif;
+  --font-title: "Trebuchet MS", Tahoma, Verdana, sans-serif;
 
-  --text-primary: #1a1a1a;
-  --text-secondary: rgba(0, 0, 0, 0.62);
-  --text-muted: rgba(0, 0, 0, 0.44);
+  /* Title bar — the vertical banding is what makes Luna look like Luna */
+  --title-active: linear-gradient(
+    180deg,
+    #0058e6 0%, #3d95ff 4%, #1b7ef5 8%, #0054e3 14%,
+    #0055eb 52%, #0050e0 88%, #003ec4 96%, #0f4bb8 100%
+  );
+  --title-inactive: linear-gradient(
+    180deg,
+    #7ba2e7 0%, #a8c6f5 4%, #8fb2ec 8%, #7da5e8 14%,
+    #7fa7e9 52%, #789fe4 88%, #6b8fd6 96%, #7396d8 100%
+  );
+  --title-text: #ffffff;
+  --title-text-inactive: #dbe7fb;
+  --title-shadow: 1px 1px 1px rgba(0, 0, 0, 0.45);
 
-  --stroke: rgba(0, 0, 0, 0.07);
-  --stroke-strong: rgba(0, 0, 0, 0.13);
-  --divider: rgba(0, 0, 0, 0.06);
+  /* Window frame */
+  --frame: #0054e3;
+  --frame-inactive: #7ba2e7;
+  --frame-w: 3px;
+  --radius-title: 8px;
+  --radius-ctl: 3px;
 
-  --accent: #005fb8;
-  --accent-deep: #005fb8;
-  --on-accent: #ffffff;
+  /* Surfaces */
+  --face: #ece9d8;          /* dialog / window face */
+  --face-hi: #ffffff;       /* 3D highlight */
+  --face-lo: #aca899;       /* 3D shadow */
+  --face-lo2: #716f64;      /* 3D dark shadow */
+  --content: #ffffff;       /* lists, chart surfaces */
+  --content-alt: #f6f6f0;
 
-  --good: #0f7b34;
+  /* Ink */
+  --text: #000000;
+  --text-dim: #4d4d4d;
+  --text-faint: #7b7b70;
+  --link: #0000c8;
+
+  /* Chrome */
+  --taskbar: linear-gradient(180deg, #245edb 0%, #4f8ff4 3%, #2c6ee0 6%, #2361db 12%, #2360da 88%, #1c4fbe 94%, #1941a5 100%);
+  --taskbar-top: #4b8cf5;
+  --tray: linear-gradient(180deg, #0f91e4 0%, #2fb8f5 4%, #109ae6 10%, #0d8ada 60%, #0b7ac6 100%);
+  --tray-edge: #16a1ea;
+  --start: linear-gradient(180deg, #3c993c 0%, #57b64c 6%, #47a139 40%, #3a8a2c 70%, #2f7223 100%);
+  --start-hi: #6fca5c;
+  --taskbtn: linear-gradient(180deg, #3f8ef7 0%, #2d76e8 8%, #1e63db 50%, #1a5ad2 100%);
+  --taskbtn-active: linear-gradient(180deg, #1c4fb8 0%, #2a63cd 10%, #2f6cd6 60%, #3a7ae0 100%);
+
+  /* Panels — the Explorer task pane and its headers */
+  --sidebar: linear-gradient(180deg, #7ba2e7 0%, #6b8fd6 40%, #4f74c9 100%);
+  --pane-head: linear-gradient(90deg, #f0f4fd 0%, #d8e5fb 100%);
+  --pane-head-text: #2a5fbf;
+  --pane-body: #ffffff;
+
+  /* Selection + status */
+  --select: #316ac5;
+  --select-text: #ffffff;
+  --hover: #d8e8fb;
+  --good: #0b7a2f;
   --bad: #c42b1c;
-  --warn: #9d5d00;
+  --warn: #a35c00;
+  --accent: #0054e3;
 
+  /* Charts — validated on the white content surface */
   --series-1: #2a78d6;
   --series-2: #eb6834;
   --series-3: #1baf7a;
-  --series-other: rgba(0, 0, 0, 0.2);
-  --grid: rgba(0, 0, 0, 0.08);
+  --series-other: #b6b3a4;
+  --grid: rgba(0, 0, 0, 0.09);
 
-  --shadow-window: 0 32px 64px rgba(0, 0, 0, 0.18), 0 2px 21px rgba(0, 0, 0, 0.12);
-  --shadow-flyout: 0 16px 40px rgba(0, 0, 0, 0.16);
+  --shadow-win: 3px 3px 10px rgba(0, 0, 0, 0.35);
+  --shadow-menu: 3px 3px 6px rgba(0, 0, 0, 0.32);
+}
+
+:root[data-theme="olive"] {
+  --title-active: linear-gradient(
+    180deg,
+    #79943f 0%, #a4bd6b 4%, #8ba84f 8%, #7c9a3f 14%,
+    #7f9d42 52%, #74913a 88%, #5f7a2b 96%, #6b8733 100%
+  );
+  --title-inactive: linear-gradient(180deg, #b3bf94 0%, #cbd4b3 6%, #b8c49b 40%, #a9b78d 100%);
+  --title-text-inactive: #f0f3e6;
+  --frame: #7c9a3f;
+  --frame-inactive: #b3bf94;
+  --taskbar: linear-gradient(180deg, #86a247 0%, #a6c069 3%, #7f9a41 8%, #78923c 88%, #5e7529 100%);
+  --taskbar-top: #a6c069;
+  --tray: linear-gradient(180deg, #8fae4d 0%, #abc873 5%, #83a244 60%, #6f8b36 100%);
+  --tray-edge: #a3c168;
+  --taskbtn: linear-gradient(180deg, #9ab962 0%, #86a44a 8%, #7a973f 50%, #718d39 100%);
+  --taskbtn-active: linear-gradient(180deg, #5f7a2b 0%, #74913a 10%, #7f9d42 60%, #8cab4d 100%);
+  --sidebar: linear-gradient(180deg, #b3bf94 0%, #9aa87a 40%, #7f8f5d 100%);
+  --pane-head: linear-gradient(90deg, #f4f6ea 0%, #e2e9cd 100%);
+  --pane-head-text: #5c7228;
+  --select: #6b8733;
+  --hover: #e6ecd4;
+  --accent: #5c7228;
+}
+
+:root[data-theme="silver"] {
+  --title-active: linear-gradient(
+    180deg,
+    #9c9cae 0%, #d3d3e0 4%, #b3b3c4 8%, #9d9db0 14%,
+    #a0a0b2 52%, #9494a8 88%, #7c7c92 96%, #8a8a9e 100%
+  );
+  --title-inactive: linear-gradient(180deg, #c5c5d2 0%, #e2e2ea 6%, #cfcfda 40%, #bfbfcd 100%);
+  --title-text-inactive: #f2f2f6;
+  --frame: #9d9db0;
+  --frame-inactive: #c5c5d2;
+  --taskbar: linear-gradient(180deg, #a3a3b5 0%, #d0d0dc 3%, #a8a8ba 8%, #9d9daf 88%, #7e7e93 100%);
+  --taskbar-top: #d0d0dc;
+  --tray: linear-gradient(180deg, #b0b0c1 0%, #d6d6e1 5%, #a9a9bb 60%, #9595a9 100%);
+  --tray-edge: #cdcdd9;
+  --start: linear-gradient(180deg, #8a8a9e 0%, #adadbe 6%, #9292a6 40%, #7d7d92 70%, #6a6a7f 100%);
+  --start-hi: #c2c2d0;
+  --taskbtn: linear-gradient(180deg, #c2c2d0 0%, #adadbe 8%, #9a9aad 50%, #9090a3 100%);
+  --taskbtn-active: linear-gradient(180deg, #7c7c92 0%, #9292a6 10%, #a0a0b2 60%, #b0b0c1 100%);
+  --sidebar: linear-gradient(180deg, #c5c5d2 0%, #aaaabb 40%, #8f8fa2 100%);
+  --pane-head: linear-gradient(90deg, #f6f6f9 0%, #e3e3ea 100%);
+  --pane-head-text: #5a5a6c;
+  --select: #7c7c92;
+  --hover: #e6e6ee;
+  --accent: #5a5a6c;
+}
+
+/* Windows Classic — square, grey, 2px bevels everywhere */
+:root[data-theme="classic"] {
+  --font-ui: Tahoma, "MS Sans Serif", Verdana, sans-serif;
+  --font-title: Tahoma, "MS Sans Serif", sans-serif;
+  --title-active: linear-gradient(90deg, #0a246a 0%, #a6caf0 100%);
+  --title-inactive: linear-gradient(90deg, #808080 0%, #b5b5b5 100%);
+  --title-text-inactive: #d4d0c8;
+  --title-shadow: none;
+  --frame: #d4d0c8;
+  --frame-inactive: #d4d0c8;
+  --frame-w: 4px;
+  --radius-title: 0px;
+  --radius-ctl: 0px;
+  --face: #d4d0c8;
+  --face-hi: #ffffff;
+  --face-lo: #808080;
+  --face-lo2: #404040;
+  --content: #ffffff;
+  --content-alt: #f2f0ec;
+  --taskbar: linear-gradient(180deg, #d4d0c8 0%, #d4d0c8 100%);
+  --taskbar-top: #ffffff;
+  --tray: linear-gradient(180deg, #d4d0c8 0%, #d4d0c8 100%);
+  --tray-edge: #808080;
+  --start: linear-gradient(180deg, #d4d0c8 0%, #d4d0c8 100%);
+  --start-hi: #ffffff;
+  --taskbtn: linear-gradient(180deg, #d4d0c8 0%, #d4d0c8 100%);
+  --taskbtn-active: linear-gradient(180deg, #c6c2ba 0%, #c6c2ba 100%);
+  --sidebar: linear-gradient(180deg, #d4d0c8 0%, #d4d0c8 100%);
+  --pane-head: linear-gradient(90deg, #d4d0c8 0%, #d4d0c8 100%);
+  --pane-head-text: #0a246a;
+  --select: #0a246a;
+  --hover: #e8e6e2;
+  --accent: #0a246a;
+  --shadow-win: none;
+  --shadow-menu: 2px 2px 0 rgba(0, 0, 0, 0.35);
 }
 
 * { box-sizing: border-box; }
@@ -99,63 +188,157 @@ html, body {
 }
 
 body {
-  background: #0a0a0a;
-  color: var(--text-primary);
-  font-family: var(--font-sans);
-  font-size: 14px;
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
+  background: #3a6ea5;
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: 11px;
   user-select: none;
+  -webkit-font-smoothing: antialiased;
 }
 
 button { font: inherit; color: inherit; }
 
-/* Fluent scrollbars ------------------------------------------------ */
-.scroll-fluent { scrollbar-width: thin; scrollbar-color: var(--stroke-strong) transparent; }
-.scroll-fluent::-webkit-scrollbar { width: 10px; height: 10px; }
-.scroll-fluent::-webkit-scrollbar-track { background: transparent; }
-.scroll-fluent::-webkit-scrollbar-thumb {
-  background: var(--stroke-strong);
-  border-radius: 99px;
-  border: 3px solid transparent;
-  background-clip: content-box;
+/* ---- 3D bevels: the whole visual grammar of a 90s/00s UI ---------- */
+.bevel-out {
+  border: 1px solid;
+  border-color: var(--face-hi) var(--face-lo2) var(--face-lo2) var(--face-hi);
+  box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.7), inset -1px -1px 0 var(--face-lo);
 }
-.scroll-fluent::-webkit-scrollbar-thumb:hover { background: var(--text-muted); background-clip: content-box; }
-
-/* Reusable Fluent surfaces ---------------------------------------- */
-.mica {
-  background: var(--mica);
-  backdrop-filter: blur(48px) saturate(160%);
-  -webkit-backdrop-filter: blur(48px) saturate(160%);
+.bevel-in {
+  border: 1px solid;
+  border-color: var(--face-lo2) var(--face-hi) var(--face-hi) var(--face-lo2);
+  box-shadow: inset 1px 1px 0 var(--face-lo), inset -1px -1px 0 rgba(255, 255, 255, 0.7);
 }
-.acrylic {
-  background: var(--acrylic);
-  backdrop-filter: blur(48px) saturate(170%);
-  -webkit-backdrop-filter: blur(48px) saturate(170%);
-}
-.card {
-  background: var(--surface-2);
-  border: 1px solid var(--stroke);
-  border-radius: 8px;
+/* Sunken content well — list boxes, text areas, chart panels */
+.sunken {
+  border: 1px solid;
+  border-color: #7f9db9 #ffffff #ffffff #7f9db9;
+  background: var(--content);
 }
 
+/* ---- XP controls -------------------------------------------------- */
+.xp-btn {
+  font-family: var(--font-ui);
+  font-size: 11px;
+  padding: 3px 12px;
+  min-width: 72px;
+  border-radius: var(--radius-ctl);
+  border: 1px solid #003c74;
+  background: linear-gradient(180deg, #ffffff 0%, #f2f2ea 45%, #e3e1d3 46%, #eeede1 100%);
+  color: var(--text);
+  cursor: default;
+}
+.xp-btn:hover { border-color: #0078d7; background: linear-gradient(180deg, #ffffff 0%, #f4f8fd 45%, #dceafb 46%, #eaf3fd 100%); }
+.xp-btn:active { background: linear-gradient(180deg, #e3e1d3 0%, #eeede1 100%); box-shadow: inset 1px 1px 2px rgba(0,0,0,.2); }
+.xp-btn:disabled { color: var(--face-lo); border-color: var(--face-lo); background: var(--face); }
+.xp-btn-primary {
+  border-color: #003c74;
+  box-shadow: 0 0 0 1px rgba(0, 84, 227, 0.45);
+  font-weight: 700;
+}
+
+.xp-input {
+  font-family: var(--font-ui);
+  font-size: 11px;
+  padding: 3px 5px;
+  background: var(--content);
+  border: 1px solid;
+  border-color: #7f9db9 #ffffff #ffffff #7f9db9;
+  color: var(--text);
+  outline: none;
+}
+.xp-input:focus { border-color: #0078d7 #7ab8f5 #7ab8f5 #0078d7; }
+
+:root[data-theme="classic"] .xp-btn {
+  border: none;
+  border-radius: 0;
+  background: var(--face);
+  box-shadow: inset 1px 1px 0 #ffffff, inset -1px -1px 0 #404040, inset 2px 2px 0 #dfdcd5, inset -2px -2px 0 #808080;
+}
+:root[data-theme="classic"] .xp-btn:hover { background: var(--face); }
+:root[data-theme="classic"] .xp-btn:active {
+  box-shadow: inset 1px 1px 0 #404040, inset -1px -1px 0 #ffffff, inset 2px 2px 0 #808080;
+}
+
+/* ---- Caption buttons ---------------------------------------------- */
+.caption-btn {
+  display: grid;
+  place-items: center;
+  width: 21px;
+  height: 21px;
+  border-radius: 3px;
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  color: #fff;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.28);
+  background: linear-gradient(180deg, #9fc8fb 0%, #4f8ff4 16%, #1f66dd 55%, #1450b8 100%);
+}
+.caption-btn:hover { background: linear-gradient(180deg, #c6e0ff 0%, #74aaf8 16%, #3a80e8 55%, #245fc8 100%); }
+.caption-btn--close {
+  width: 24px;
+  background: linear-gradient(180deg, #f5a08e 0%, #e8503a 16%, #d63516 55%, #b32a10 100%);
+}
+.caption-btn--close:hover { background: linear-gradient(180deg, #ffc7ba 0%, #f2705a 16%, #e04424 55%, #c0330f 100%); }
+
+/* Classic drew them as grey bevelled squares with a black glyph. */
+:root[data-theme="classic"] .caption-btn,
+:root[data-theme="classic"] .caption-btn--close {
+  width: 17px;
+  height: 15px;
+  border: none;
+  border-radius: 0;
+  color: #000;
+  background: #d4d0c8;
+  box-shadow: inset 1px 1px 0 #ffffff, inset -1px -1px 0 #404040, inset 2px 2px 0 #dfdcd5, inset -2px -2px 0 #808080;
+}
+:root[data-theme="classic"] .caption-btn:active {
+  box-shadow: inset 1px 1px 0 #404040, inset -1px -1px 0 #ffffff, inset 2px 2px 0 #808080;
+}
+
+/* ---- XP scrollbars ------------------------------------------------ */
+.scroll-xp { scrollbar-width: auto; scrollbar-color: #b5cbe8 #f1f1f1; }
+.scroll-xp::-webkit-scrollbar { width: 16px; height: 16px; }
+.scroll-xp::-webkit-scrollbar-track {
+  background: repeating-conic-gradient(#f7f7f5 0 25%, #ffffff 0 50%) 50% / 2px 2px;
+  border-left: 1px solid #d6d2c2;
+}
+.scroll-xp::-webkit-scrollbar-thumb {
+  background: linear-gradient(90deg, #f4f7fd 0%, #cfdff4 40%, #a8c6ea 100%);
+  border: 1px solid #6f8cb5;
+  border-radius: 2px;
+}
+.scroll-xp::-webkit-scrollbar-thumb:hover { background: linear-gradient(90deg, #ffffff 0%, #dbe9fa 40%, #b9d3f2 100%); }
+.scroll-xp::-webkit-scrollbar-corner { background: #f1f1f1; }
+
+/* ---- Helpers ------------------------------------------------------ */
 .tabular { font-variant-numeric: tabular-nums; }
+.title-text {
+  font-family: var(--font-title);
+  font-weight: 700;
+  text-shadow: var(--title-shadow);
+}
 
-/* Animations ------------------------------------------------------- */
-@keyframes win-open   { from { opacity: 0; transform: scale(0.94) translateY(8px); } to { opacity: 1; transform: none; } }
-@keyframes flyout-up  { from { opacity: 0; transform: translateY(18px) scale(0.99); } to { opacity: 1; transform: none; } }
-@keyframes fade-in    { from { opacity: 0; } to { opacity: 1; } }
-@keyframes row-in     { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
-@keyframes spin       { to { transform: rotate(360deg); } }
-@keyframes pulse-dot  { 0%,100% { opacity: 1; } 50% { opacity: 0.25; } }
-@keyframes caret      { 0%,49% { opacity: 1; } 50%,100% { opacity: 0; } }
+/* Group box — the XP fieldset with a label sitting on the border */
+.group-box {
+  border: 1px solid #d5d2c6;
+  background: var(--content);
+  border-radius: 3px;
+}
 
-.anim-win    { animation: win-open 0.18s cubic-bezier(0.2, 0.9, 0.3, 1); }
-.anim-flyout { animation: flyout-up 0.22s cubic-bezier(0.1, 0.9, 0.2, 1); }
-.anim-fade   { animation: fade-in 0.35s ease; }
-.anim-row    { animation: row-in 0.3s ease; }
-.anim-caret  { animation: caret 1.05s steps(1) infinite; }
+/* ---- Animations --------------------------------------------------- */
+@keyframes win-open  { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: none; } }
+@keyframes menu-in   { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@keyframes row-in    { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: none; } }
+@keyframes fade-in   { from { opacity: 0; } to { opacity: 1; } }
+@keyframes spin      { to { transform: rotate(360deg); } }
+@keyframes pulse-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.25; } }
+@keyframes xp-boot   { 0% { left: -40%; } 100% { left: 100%; } }
+@keyframes marquee   { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+.anim-win  { animation: win-open 0.12s ease-out; }
+.anim-menu { animation: menu-in 0.16s cubic-bezier(0.1, 0.9, 0.2, 1); }
+.anim-row  { animation: row-in 0.28s ease; }
+.anim-fade { animation: fade-in 0.4s ease; }
 
 @media (prefers-reduced-motion: reduce) {
-  .anim-win, .anim-flyout, .anim-fade, .anim-row { animation: none !important; }
+  .anim-win, .anim-menu, .anim-row, .anim-fade { animation: none !important; }
 }

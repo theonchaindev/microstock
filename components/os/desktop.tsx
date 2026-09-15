@@ -2,29 +2,30 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { REGISTRY } from "@/components/apps/registry";
+import { usePersisted } from "@/lib/client-state";
 import { BootScreen } from "./boot";
 import { DesktopContextMenu, type MenuPos } from "./context-menu";
 import { DesktopIcons } from "./desktop-icons";
-import { ActionCenter, WidgetsPanel } from "./flyouts";
+import { BalloonTip, TrayPanel } from "./flyouts";
+import { IconDefs } from "./icons";
 import { StartMenu } from "./start";
 import { SystemProvider, useSystem } from "./system";
-import { usePersisted } from "@/lib/client-state";
 import { Taskbar } from "./taskbar";
 import { WallpaperLayer } from "./wallpaper";
 import { WindowFrame } from "./window";
 
-type Flyout = "start" | "search" | "widgets" | "center" | null;
+type Flyout = "start" | "tray" | null;
 
 function Shell() {
   const { wins, topId, open, settings } = useSystem();
   const [flyout, setFlyout] = useState<Flyout>(null);
   const [menu, setMenu] = useState<MenuPos | null>(null);
-  const booted = useRef(false);
+  const launched = useRef(false);
 
   // Land on the Terminal so the desktop is never empty on arrival.
   useEffect(() => {
-    if (booted.current) return;
-    booted.current = true;
+    if (launched.current) return;
+    launched.current = true;
     open("terminal");
   }, [open]);
 
@@ -56,6 +57,7 @@ function Shell() {
         setMenu({ x: e.clientX, y: e.clientY });
       }}
     >
+      <IconDefs />
       <WallpaperLayer id={settings.wallpaper} />
       <DesktopIcons />
 
@@ -71,21 +73,15 @@ function Shell() {
       </div>
 
       {menu && <DesktopContextMenu pos={menu} onClose={() => setMenu(null)} />}
-
-      {(flyout === "start" || flyout === "search") && (
-        <StartMenu autoFocus={flyout === "search"} onClose={() => setFlyout(null)} />
-      )}
-      {flyout === "widgets" && <WidgetsPanel onClose={() => setFlyout(null)} />}
-      {flyout === "center" && <ActionCenter onClose={() => setFlyout(null)} />}
+      {flyout === "start" && <StartMenu autoFocus onClose={() => setFlyout(null)} />}
+      {flyout === "tray" && <TrayPanel onClose={() => setFlyout(null)} />}
+      {flyout === null && <BalloonTip />}
 
       <Taskbar
         onStart={() => toggle("start")}
         startOpen={flyout === "start"}
-        onSearch={() => toggle("search")}
-        onWidgets={() => toggle("widgets")}
-        widgetsOpen={flyout === "widgets"}
-        onCenter={() => toggle("center")}
-        centerOpen={flyout === "center"}
+        onTray={() => toggle("tray")}
+        trayOpen={flyout === "tray"}
       />
     </div>
   );

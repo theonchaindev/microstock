@@ -161,13 +161,14 @@ export default function CmdApp() {
     }
   };
 
+  // The console keeps its own palette: theme ink would vanish on black.
   const tone = (t?: Line["tone"]) =>
-    t === "dim" ? "var(--text-muted)" : t === "good" ? "var(--good)" : t === "bad" ? "var(--bad)" : t === "accent" ? "var(--accent)" : "var(--text-primary)";
+    t === "dim" ? "#9a9a9a" : t === "good" ? "#5ce65c" : t === "bad" ? "#ff7b6b" : t === "accent" ? "#6fc3ff" : "#e8e8e8";
 
   return (
     <div
-      className="scroll-fluent h-full min-h-full cursor-text overflow-auto p-3 font-mono text-[12.5px] leading-[1.55]"
-      style={{ background: "#0c0c0c", color: "#e6e6e6" }}
+      className="scroll-xp h-full min-h-full cursor-text overflow-auto p-3 font-mono text-[12px] leading-[1.5]"
+      style={{ background: "#000000", color: "#e8e8e8" }}
       onClick={() => inputRef.current?.focus()}
     >
       {lines.map((l, i) => (
@@ -176,7 +177,7 @@ export default function CmdApp() {
         </div>
       ))}
       <div className="flex items-center">
-        <span style={{ color: "var(--text-muted)" }}>C:\Microstock&gt;&nbsp;</span>
+        <span style={{ color: "#e8e8e8" }}>C:\Microstock&gt;&nbsp;</span>
         <input
           ref={inputRef}
           autoFocus
@@ -184,8 +185,8 @@ export default function CmdApp() {
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={onKey}
           spellCheck={false}
-          className="flex-1 bg-transparent font-mono text-[12.5px] outline-none"
-          style={{ color: "#e6e6e6" }}
+          className="flex-1 bg-transparent font-mono text-[12px] outline-none"
+          style={{ color: "#e8e8e8" }}
           aria-label="Command input"
         />
       </div>

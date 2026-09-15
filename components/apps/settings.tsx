@@ -1,182 +1,178 @@
 "use client";
 
 import { useState } from "react";
-import { AppShell, Badge, Btn, Panel } from "@/components/ui/kit";
+import { Badge, Btn, Panel } from "@/components/ui/kit";
 import { IconCheck } from "@/components/os/icons";
-import { useSystem, type Theme, type Wallpaper } from "@/components/os/system";
+import { DEFAULT_SETTINGS, useSystem, type Theme, type Wallpaper } from "@/components/os/system";
 import { WALLPAPERS } from "@/components/os/wallpaper";
 import { TOKEN } from "@/lib/market";
 import { num } from "@/lib/format";
 
-const ACCENTS = [
-  { hex: "#4cc2ff", name: "Default blue" },
-  { hex: "#5fd39b", name: "Vault green" },
-  { hex: "#ff9a5c", name: "Candle orange" },
-  { hex: "#c39bff", name: "Solana violet" },
-  { hex: "#ff7a9c", name: "Liquidation pink" },
+const SCHEMES: { id: Theme; label: string; swatch: string }[] = [
+  { id: "blue", label: "Windows XP style (Blue)", swatch: "linear-gradient(180deg,#3d95ff,#0054e3)" },
+  { id: "olive", label: "Windows XP style (Olive Green)", swatch: "linear-gradient(180deg,#a4bd6b,#7c9a3f)" },
+  { id: "silver", label: "Windows XP style (Silver)", swatch: "linear-gradient(180deg,#d3d3e0,#9d9db0)" },
+  { id: "classic", label: "Windows Classic style", swatch: "linear-gradient(90deg,#0a246a,#a6caf0)" },
 ];
 
-const PAGES = ["Personalisation", "System", "About"] as const;
+const TABS = ["Themes", "Desktop", "System", "About"] as const;
+type Tab = (typeof TABS)[number];
 
-export default function SettingsApp() {
+export default function ControlPanelApp() {
   const { settings, setSettings } = useSystem();
-  const [page, setPage] = useState<(typeof PAGES)[number]>("Personalisation");
+  const [tab, setTab] = useState<Tab>("Themes");
 
   return (
-    <div className="flex h-full min-h-0">
-      <nav className="w-[178px] shrink-0 border-r p-2" style={{ borderColor: "var(--divider)" }}>
-        {PAGES.map((p) => (
-          <button
-            key={p}
-            onClick={() => setPage(p)}
-            className="mb-0.5 flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-[12.5px] transition-colors"
-            style={{
-              background: page === p ? "var(--surface-3)" : "transparent",
-              color: page === p ? "var(--text-primary)" : "var(--text-secondary)",
-            }}
-          >
-            {page === p && <span className="h-3.5 w-[3px] rounded-full" style={{ background: "var(--accent)" }} />}
-            <span style={{ marginLeft: page === p ? 0 : 7 }}>{p}</span>
-          </button>
-        ))}
-      </nav>
+    <div className="flex h-full min-h-0 flex-col p-2.5">
+      {/* XP tab strip */}
+      <div className="flex items-end gap-[2px] pl-1" style={{ marginBottom: -1 }}>
+        {TABS.map((t) => {
+          const on = t === tab;
+          return (
+            <button
+              key={t}
+              onClick={() => setTab(t)}
+              className="px-3 pb-1 pt-1.5 text-[11px]"
+              style={{
+                background: on ? "var(--content)" : "linear-gradient(180deg,#fbfaf4,#e8e6d9)",
+                border: "1px solid #a0a0a0",
+                borderBottom: on ? "1px solid var(--content)" : "1px solid #a0a0a0",
+                borderRadius: "3px 3px 0 0",
+                fontWeight: on ? 700 : 400,
+                position: "relative",
+                zIndex: on ? 2 : 1,
+              }}
+            >
+              {t}
+            </button>
+          );
+        })}
+      </div>
 
-      <div className="scroll-fluent min-h-0 flex-1 overflow-auto">
-        <AppShell className="space-y-4">
-          {page === "Personalisation" && (
-            <>
-              <Panel title="Background">
-                <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                  {WALLPAPERS.map((w) => (
-                    <button
-                      key={w.id}
-                      onClick={() => setSettings({ wallpaper: w.id as Wallpaper })}
-                      className="group relative overflow-hidden rounded-lg text-left"
+      <div
+        className="scroll-xp min-h-0 flex-1 overflow-auto p-3"
+        style={{ background: "var(--content)", border: "1px solid #a0a0a0", borderRadius: "0 3px 3px 3px" }}
+      >
+        {tab === "Themes" && (
+          <>
+            <p className="mb-3 text-[11px]" style={{ color: "var(--text-dim)" }}>
+              A theme is a background plus a set of sounds, icons, and other elements to help you personalise your
+              computer with one click.
+            </p>
+            <div className="space-y-1.5">
+              {SCHEMES.map((s) => {
+                const on = settings.theme === s.id;
+                return (
+                  <button
+                    key={s.id}
+                    onClick={() => setSettings({ theme: s.id })}
+                    className="flex w-full items-center gap-3 p-2 text-left"
+                    style={{
+                      border: `1px solid ${on ? "var(--select)" : "#dcd9cc"}`,
+                      background: on ? "var(--hover)" : "var(--content)",
+                      borderRadius: 3,
+                    }}
+                  >
+                    <span className="h-7 w-14 shrink-0" style={{ background: s.swatch, border: "1px solid #8a8a8a", borderRadius: 2 }} />
+                    <span className="flex-1 text-[11px]" style={{ fontWeight: on ? 700 : 400 }}>{s.label}</span>
+                    {on && <span style={{ color: "var(--select)" }}><IconCheck size={14} /></span>}
+                  </button>
+                );
+              })}
+            </div>
+          </>
+        )}
+
+        {tab === "Desktop" && (
+          <>
+            <p className="mb-3 text-[11px]" style={{ color: "var(--text-dim)" }}>
+              Choose a background for your desktop.
+            </p>
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+              {WALLPAPERS.map((w) => {
+                const on = settings.wallpaper === w.id;
+                return (
+                  <button key={w.id} onClick={() => setSettings({ wallpaper: w.id as Wallpaper })} className="text-left">
+                    <span
+                      className="relative block"
                       style={{
-                        border: `2px solid ${settings.wallpaper === w.id ? "var(--accent)" : "var(--stroke)"}`,
-                        aspectRatio: "16/10",
+                        aspectRatio: "4/3",
+                        background: THUMB[w.id],
+                        border: `2px solid ${on ? "var(--select)" : "#9a9a9a"}`,
+                        borderRadius: 2,
                       }}
-                    >
-                      <Thumb id={w.id} />
-                      <span className="absolute inset-x-0 bottom-0 px-2 py-1 text-[11px]" style={{ background: "rgba(0,0,0,.55)", color: "#fff" }}>
-                        {w.label}
-                      </span>
-                      {settings.wallpaper === w.id && (
-                        <span className="absolute right-1.5 top-1.5 grid h-5 w-5 place-items-center rounded-full" style={{ background: "var(--accent)", color: "var(--on-accent)" }}>
-                          <IconCheck size={12} />
-                        </span>
-                      )}
-                    </button>
-                  ))}
-                </div>
-              </Panel>
+                    />
+                    <span className="mt-1 block text-[11px]" style={{ fontWeight: on ? 700 : 400 }}>
+                      {w.label}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+            <div className="mt-4">
+              <Btn onClick={() => setSettings(DEFAULT_SETTINGS)}>Restore Defaults</Btn>
+            </div>
+          </>
+        )}
 
-              <Panel title="Colour mode">
-                <div className="flex gap-2">
-                  {(["dark", "light"] as Theme[]).map((t) => (
-                    <button
-                      key={t}
-                      onClick={() => setSettings({ theme: t })}
-                      className="flex-1 rounded-lg px-4 py-3 text-left text-[12.5px] transition-colors"
-                      style={{
-                        background: settings.theme === t ? "color-mix(in srgb, var(--accent) 16%, transparent)" : "var(--surface-3)",
-                        border: `1px solid ${settings.theme === t ? "var(--accent)" : "var(--stroke)"}`,
-                      }}
-                    >
-                      <div className="font-medium capitalize">{t}</div>
-                      <div className="text-[11px]" style={{ color: "var(--text-muted)" }}>
-                        {t === "dark" ? "Easier on the eyes at 4am" : "For people with normal sleep"}
-                      </div>
-                    </button>
-                  ))}
-                </div>
-              </Panel>
+        {tab === "System" && (
+          <div className="space-y-3">
+            <Panel title="Display">
+              <Row k="Resolution" v="Whatever your browser says" />
+              <Row k="Colour quality" v="Highest (32 bit)" />
+              <Row k="Graphics" v="Software-rendered SVG" />
+            </Panel>
+            <Panel title="Storage">
+              <Row k="Local storage" v="Desktop personalisation only" />
+              <Row k="Session storage" v="Wallet connection state" />
+              <Row k="Cookies" v="None" />
+              <p className="mt-2 text-[11px]" style={{ color: "var(--text-dim)" }}>
+                Nothing you do here is sent anywhere. There is no analytics script and no account.
+              </p>
+            </Panel>
+          </div>
+        )}
 
-              <Panel title="Accent colour">
-                <div className="flex flex-wrap gap-2.5">
-                  {ACCENTS.map((a) => (
-                    <button
-                      key={a.hex}
-                      onClick={() => setSettings({ accent: a.hex })}
-                      title={a.name}
-                      aria-label={a.name}
-                      className="grid h-9 w-9 place-items-center rounded-md transition-transform hover:scale-105"
-                      style={{ background: a.hex, outline: settings.accent === a.hex ? "2px solid var(--text-primary)" : "none", outlineOffset: 2 }}
-                    >
-                      {settings.accent === a.hex && <span style={{ color: "#00243b" }}><IconCheck size={14} /></span>}
-                    </button>
-                  ))}
-                </div>
-              </Panel>
-            </>
-          )}
-
-          {page === "System" && (
-            <>
-              <Panel title="Display">
-                <Row k="Resolution" v="Whatever your browser says" />
-                <Row k="Scale" v="100% (recommended)" />
-                <Row k="Graphics" v="Software-rendered SVG" />
-              </Panel>
-              <Panel title="Storage">
-                <Row k="Local storage" v="Desktop personalisation only" />
-                <Row k="Session storage" v="Wallet connection state" />
-                <Row k="Cookies" v="None" />
-                <p className="mt-3 text-[11.5px]" style={{ color: "var(--text-muted)" }}>
-                  Nothing you do here is sent anywhere. There is no analytics script and no account.
-                </p>
-              </Panel>
-              <Panel title="Reset">
-                <p className="mb-3 text-[12.5px]" style={{ color: "var(--text-secondary)" }}>
-                  Restore the default wallpaper, theme and accent colour.
-                </p>
-                <Btn onClick={() => setSettings({ theme: "dark", wallpaper: "bloom", accent: "#4cc2ff" })}>Reset desktop</Btn>
-              </Panel>
-            </>
-          )}
-
-          {page === "About" && (
-            <>
-              <Panel title="Microstock Desktop">
-                <Row k="Edition" v="Microstock 11 Pro" />
-                <Row k="Version" v="11.0.26100.1742" />
-                <Row k="Chain" v={TOKEN.chain} />
-                <Row k="Token" v={`$${TOKEN.symbol} · ${num(TOKEN.supply)} supply`} />
-                <Row k="Fee to holders" v={`${TOKEN.feeBps / 100}% of every trade`} />
-                <Row k="Epoch" v="5 minutes" />
-              </Panel>
-              <Panel title="Disclosure">
-                <div className="mb-2"><Badge tone="warn">Read this</Badge></div>
-                <p className="text-[12.5px] leading-relaxed" style={{ color: "var(--text-secondary)" }}>
-                  Microstock is a memecoin with a fee-share mechanic, not a security, a fund, or a yield product.
-                  Payouts move with trading volume and can stop. The token price can go to zero. Nothing in this
-                  interface is financial advice. It is not affiliated with, endorsed by, or connected to Microsoft
-                  Corporation in any way — the name is a joke about tickers.
-                </p>
-              </Panel>
-            </>
-          )}
-        </AppShell>
+        {tab === "About" && (
+          <div className="space-y-3">
+            <Panel title="Microstock XP">
+              <Row k="Edition" v="Microstock XP Professional" />
+              <Row k="Version" v="2002 (Build 2600)" />
+              <Row k="Chain" v={TOKEN.chain} />
+              <Row k="Token" v={`$${TOKEN.symbol} · ${num(TOKEN.supply)} supply`} />
+              <Row k="Fee to holders" v={`${TOKEN.feeBps / 100}% of every trade`} />
+              <Row k="Epoch" v="5 minutes" />
+            </Panel>
+            <Panel title="Disclosure">
+              <div className="mb-1.5"><Badge tone="warn">Read this</Badge></div>
+              <p className="text-[11px] leading-[1.7]" style={{ color: "var(--text-dim)" }}>
+                Microstock is a memecoin with a fee-share mechanic, not a security, a fund, or a yield product. Payouts
+                move with trading volume and can stop. The token price can go to zero. Nothing in this interface is
+                financial advice. It is not affiliated with, endorsed by, or connected to Microsoft Corporation — the
+                name is a joke about tickers, and the desktop is a parody.
+              </p>
+            </Panel>
+          </div>
+        )}
       </div>
     </div>
   );
 }
 
+const THUMB: Record<string, string> = {
+  bliss: "linear-gradient(180deg,#1a58b5 0%,#8ec2ec 52%,#6aa93a 58%,#2f6b18 100%)",
+  azul: "linear-gradient(150deg,#0b3d8c,#1563c4 55%,#062a63)",
+  ticker: "linear-gradient(170deg,#0d2b56,#04101f)",
+  classic: "#3a6ea5",
+};
+
 function Row({ k, v }: { k: string; v: string }) {
   return (
-    <div className="flex items-center justify-between gap-4 border-b py-2 text-[12.5px] last:border-0" style={{ borderColor: "var(--divider)" }}>
-      <span style={{ color: "var(--text-secondary)" }}>{k}</span>
-      <span className="tabular text-right font-medium">{v}</span>
+    <div className="flex items-baseline justify-between gap-4 border-b py-1 text-[11px] last:border-0" style={{ borderColor: "#eceade" }}>
+      <span style={{ color: "var(--text-dim)" }}>{k}</span>
+      <span className="tabular text-right font-bold">{v}</span>
     </div>
   );
 }
 
-function Thumb({ id }: { id: string }) {
-  const bg: Record<string, string> = {
-    bloom: "radial-gradient(70% 90% at 50% 50%, #3aa0ff 0%, #12407a 45%, #05142b 100%)",
-    aurora: "linear-gradient(120deg, #05070f 0%, #1fd6a4 45%, #7b4dff 75%, #05070f 100%)",
-    grid: "linear-gradient(180deg, #10243c, #04060a)",
-    ticker: "linear-gradient(160deg, #0b1220, #03050a)",
-  };
-  return <span className="absolute inset-0" style={{ background: bg[id] }} />;
-}
+export { ControlPanelApp as SettingsApp };

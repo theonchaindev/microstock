@@ -60,7 +60,7 @@ export default function WalletApp() {
 
   const snap = useMemo(() => (now ? snapshot(Math.floor(now / 1000) * 1000) : null), [now]);
 
-  if (!now || !snap) return <AppShell><div style={{ color: "var(--text-muted)" }}>Waking the keyring…</div></AppShell>;
+  if (!now || !snap) return <AppShell><div style={{ color: "var(--text-faint)" }}>Waking the keyring…</div></AppShell>;
 
   const dailyPool = snap.payoutRatePerSec * 86_400;
   const projShare = sim / (TOKEN.supply * CIRCULATING);
@@ -70,8 +70,8 @@ export default function WalletApp() {
       <AppShell className="grid min-h-full place-items-center">
         <div className="w-full max-w-[380px] text-center">
           <div className="mx-auto mb-4 w-fit"><IconWallet size={56} /></div>
-          <h1 className="text-[19px] font-semibold">Connect a Solana wallet</h1>
-          <p className="mx-auto mt-2 max-w-[320px] text-[12.5px]" style={{ color: "var(--text-secondary)" }}>
+          <h1 className="text-[13px] font-semibold">Connect a Solana wallet</h1>
+          <p className="mx-auto mt-2 max-w-[320px] text-[11px]" style={{ color: "var(--text-dim)" }}>
             Read-only. Microstock never asks for a transaction to show your balance — rewards arrive on their own.
           </p>
           <div className="mt-5 space-y-2">
@@ -80,15 +80,15 @@ export default function WalletApp() {
                 key={p}
                 onClick={() => connect(p)}
                 disabled={busy !== null}
-                className="flex w-full items-center justify-between rounded-lg px-4 py-3 text-[13.5px] font-medium transition-colors hover:brightness-125 disabled:opacity-50"
-                style={{ background: "var(--surface-2)", border: "1px solid var(--stroke-strong)" }}
+                className="flex w-full items-center justify-between rounded-[3px] px-4 py-3 text-[11px] font-medium transition-colors hover:brightness-125 disabled:opacity-50"
+                style={{ background: "var(--content)", border: "1px solid #b9b5a4" }}
               >
                 <span>{p}</span>
-                <span style={{ color: "var(--text-muted)" }}>{busy === p ? "Connecting…" : "Connect"}</span>
+                <span style={{ color: "var(--text-faint)" }}>{busy === p ? "Connecting…" : "Connect"}</span>
               </button>
             ))}
           </div>
-          <p className="mt-4 flex items-center justify-center gap-1.5 text-[11.5px]" style={{ color: "var(--text-muted)" }}>
+          <p className="mt-4 flex items-center justify-center gap-1.5 text-[11px]" style={{ color: "var(--text-faint)" }}>
             <IconLock size={12} /> No wallet installed? You&apos;ll get a demo account.
           </p>
         </div>
@@ -101,15 +101,15 @@ export default function WalletApp() {
   const value = acct.tokens * snap.price;
 
   return (
-    <AppShell className="space-y-4">
+    <AppShell className="space-y-2.5">
       <div className="flex flex-wrap items-center gap-3">
         <IconWallet size={40} />
         <div className="mr-auto">
           <div className="flex items-center gap-2">
-            <span className="font-mono text-[13px]">{shortAddr(acct.address, 6, 6)}</span>
+            <span className="font-mono text-[11px]">{shortAddr(acct.address, 6, 6)}</span>
             <Badge tone={acct.provider === "Demo" ? "warn" : "good"}>{acct.provider}</Badge>
           </div>
-          <div className="text-[11.5px]" style={{ color: "var(--text-muted)" }}>Connected · Solana mainnet-beta</div>
+          <div className="text-[11px]" style={{ color: "var(--text-faint)" }}>Connected · Solana mainnet-beta</div>
         </div>
         <Btn variant="subtle" onClick={() => setAcct(null)}>Disconnect</Btn>
       </div>
@@ -128,14 +128,14 @@ export default function WalletApp() {
             ["Per month", dailyPool * 30 * share],
           ].map(([label, v]) => (
             <div key={label as string}>
-              <div className="text-[11px] uppercase tracking-[0.07em]" style={{ color: "var(--text-muted)" }}>{label}</div>
-              <div className="tabular mt-1 text-[22px] font-semibold" style={{ color: "var(--good)" }}>
+              <div className="text-[11px] uppercase" style={{ color: "var(--text-faint)" }}>{label}</div>
+              <div className="tabular mt-1 text-[13px] font-semibold" style={{ color: "var(--good)" }}>
                 {usd(v as number, 2)}
               </div>
             </div>
           ))}
         </div>
-        <p className="mt-4 text-[12px]" style={{ color: "var(--text-secondary)" }}>
+        <p className="mt-4 text-[11px]" style={{ color: "var(--text-dim)" }}>
           There is nothing to claim. Every epoch the fee vault pays each wallet its pro-rata share in SOL —
           the numbers above are what lands in this address at the current fee rate.
         </p>
@@ -154,21 +154,21 @@ export default function WalletApp() {
         />
         <div className="mt-3 flex flex-wrap items-end justify-between gap-4">
           <div>
-            <div className="text-[11px] uppercase tracking-[0.07em]" style={{ color: "var(--text-muted)" }}>Position</div>
-            <div className="tabular text-[18px] font-semibold">{num(sim)} ${TOKEN.symbol}</div>
-            <div className="tabular text-[12px]" style={{ color: "var(--text-muted)" }}>{usd(sim * snap.price)} at today&apos;s price</div>
+            <div className="text-[11px] uppercase" style={{ color: "var(--text-faint)" }}>Position</div>
+            <div className="tabular text-[13px] font-semibold">{num(sim)} ${TOKEN.symbol}</div>
+            <div className="tabular text-[11px]" style={{ color: "var(--text-faint)" }}>{usd(sim * snap.price)} at today&apos;s price</div>
           </div>
           <div className="text-right">
-            <div className="text-[11px] uppercase tracking-[0.07em]" style={{ color: "var(--text-muted)" }}>Projected monthly</div>
-            <div className="tabular text-[26px] font-semibold" style={{ color: "var(--good)" }}>
+            <div className="text-[11px] uppercase" style={{ color: "var(--text-faint)" }}>Projected monthly</div>
+            <div className="tabular text-[13px] font-semibold" style={{ color: "var(--good)" }}>
               {usd(dailyPool * 30 * projShare)}
             </div>
-            <div className="tabular text-[12px]" style={{ color: "var(--text-muted)" }}>
+            <div className="tabular text-[11px]" style={{ color: "var(--text-faint)" }}>
               {((dailyPool * 365 * projShare) / (sim * snap.price) * 100).toFixed(1)}% annualised at current volume
             </div>
           </div>
         </div>
-        <p className="mt-3 text-[11.5px]" style={{ color: "var(--text-muted)" }}>
+        <p className="mt-3 text-[11px]" style={{ color: "var(--text-faint)" }}>
           Projections assume today&apos;s trading volume holds. Fee revenue moves with volume — it is not a fixed yield.
         </p>
       </Panel>

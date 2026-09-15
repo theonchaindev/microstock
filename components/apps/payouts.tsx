@@ -25,7 +25,7 @@ export default function PayoutsApp() {
   const days = useMemo(() => (bucket ? dailyPayouts(bucket, 14) : []), [bucket]);
   const live = useMemo(() => (bucket ? recentPayouts(bucket, 60) : []), [bucket]);
 
-  if (!now || !snap) return <AppShell><div style={{ color: "var(--text-muted)" }}>Reading the ledger…</div></AppShell>;
+  if (!now || !snap) return <AppShell><div style={{ color: "var(--text-faint)" }}>Reading the ledger…</div></AppShell>;
 
   const rows = (frozen ?? live).filter((p) =>
     filter === "all" ? true : p.usd >= Number(filter),
@@ -34,15 +34,15 @@ export default function PayoutsApp() {
   const week = paidOutRange(now - 7 * 86_400_000, now);
 
   return (
-    <AppShell className="space-y-4">
+    <AppShell className="space-y-2.5">
       <div className="grid gap-4 lg:grid-cols-[1.05fr_1fr]">
-        <Panel className="flex flex-col justify-between gap-4">
+        <Panel className="flex flex-col" bodyClass="flex flex-1 flex-col justify-between gap-3">
           <Hero
             label="Paid out to holders, all time"
             value={usd(snap.totalPaidOut)}
             sub={
               <>
-                Streaming at <span className="tabular font-semibold" style={{ color: "var(--text-primary)" }}>{usd(snap.payoutRatePerSec, 4)}</span> every
+                Streaming at <span className="tabular font-semibold" style={{ color: "var(--text)" }}>{usd(snap.payoutRatePerSec, 4)}</span> every
                 second. Next epoch settles in <span className="tabular font-semibold" style={{ color: "var(--accent)" }}>{countdown(snap.nextEpoch - now)}</span>.
               </>
             }
@@ -76,8 +76,8 @@ export default function PayoutsApp() {
         pad={false}
         className="overflow-hidden"
       >
-        <div className="flex flex-wrap items-center gap-2 border-b px-4 py-3" style={{ borderColor: "var(--divider)" }}>
-          <h2 className="mr-auto flex items-center gap-2 text-[13px] font-semibold">
+        <div className="flex flex-wrap items-center gap-2 border-b px-4 py-3" style={{ borderColor: "#e2e0d4" }}>
+          <h2 className="mr-auto flex items-center gap-2 text-[11px] font-semibold">
             Live payout feed
             <Badge tone={paused ? "warn" : "good"}>{paused ? "Paused" : "Live"}</Badge>
           </h2>
@@ -86,27 +86,27 @@ export default function PayoutsApp() {
             {paused ? "Resume" : "Pause"}
           </Btn>
         </div>
-        <div className="scroll-fluent max-h-[320px] overflow-auto">
+        <div className="scroll-xp max-h-[320px] overflow-auto">
           <Table head={["Wallet", "Amount", "Tokens", "Settled"]}>
             {rows.map((p) => (
-              <tr key={p.id} className="anim-row" style={{ borderBottom: "1px solid var(--divider)" }}>
-                <td className="px-3 py-2 font-mono text-[11.5px]" style={{ color: "var(--text-secondary)" }}>
+              <tr key={p.id} className="anim-row" style={{ borderBottom: "1px solid #e2e0d4" }}>
+                <td className="px-3 py-2 font-mono text-[11px]" style={{ color: "var(--text-dim)" }}>
                   {shortAddr(p.addr, 6, 6)}
                 </td>
                 <td className="tabular px-3 py-2 font-semibold" style={{ color: "var(--good)" }}>
                   +{usd(p.usd)}
                 </td>
-                <td className="tabular px-3 py-2" style={{ color: "var(--text-secondary)" }}>
+                <td className="tabular px-3 py-2" style={{ color: "var(--text-dim)" }}>
                   {num(p.tokens, 0)}
                 </td>
-                <td className="tabular px-3 py-2" style={{ color: "var(--text-muted)" }}>
+                <td className="tabular px-3 py-2" style={{ color: "var(--text-faint)" }}>
                   {ago(now - p.t)}
                 </td>
               </tr>
             ))}
             {!rows.length && (
               <tr>
-                <td colSpan={4} className="px-3 py-6 text-center" style={{ color: "var(--text-muted)" }}>
+                <td colSpan={4} className="px-3 py-6 text-center" style={{ color: "var(--text-faint)" }}>
                   No payouts match this filter yet.
                 </td>
               </tr>
@@ -120,9 +120,9 @@ export default function PayoutsApp() {
 
 function MiniStat({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-md p-2.5" style={{ background: "var(--surface-3)" }}>
-      <div className="text-[10.5px] uppercase tracking-[0.07em]" style={{ color: "var(--text-muted)" }}>{label}</div>
-      <div className="tabular mt-1 text-[16px] font-semibold">{value}</div>
+    <div className="rounded-[3px] p-2.5" style={{ background: "var(--content-alt)" }}>
+      <div className="text-[10px] uppercase" style={{ color: "var(--text-faint)" }}>{label}</div>
+      <div className="tabular mt-1 text-[13px] font-semibold">{value}</div>
     </div>
   );
 }

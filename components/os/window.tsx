@@ -2,10 +2,10 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { APPS } from "@/lib/apps";
-import { IconClose, IconMax, IconMin, IconRestore } from "./icons";
+import { CaptionClose, CaptionMax, CaptionMin, CaptionRestore } from "./icons";
 import { useSystem, type Rect, type Win } from "./system";
 
-export const TASKBAR_H = 48;
+export const TASKBAR_H = 30;
 
 type Snap = "none" | "left" | "right" | "max";
 
@@ -52,7 +52,6 @@ export function WindowFrame({
       if ((e.target as HTMLElement).closest("[data-caption]")) return;
       focus(win.id);
       const { vw } = vp();
-      // Un-maximise on drag, keeping the grab point under the cursor.
       let ox = win.x;
       let oy = win.y;
       if (win.maximized) {
@@ -75,7 +74,7 @@ export function WindowFrame({
       const { vw, vh } = vp();
       const x = e.clientX - drag.current.dx;
       const y = Math.max(0, e.clientY - drag.current.dy);
-      setRect(win.id, { x, y: Math.min(y, vh - TASKBAR_H - 40) });
+      setRect(win.id, { x, y: Math.min(y, vh - TASKBAR_H - 32) });
       setSnapHint(e.clientY < 8 ? "max" : e.clientX < 8 ? "left" : e.clientX > vw - 8 ? "right" : "none");
     },
     [setRect, win.id],
@@ -140,7 +139,7 @@ export function WindowFrame({
         w,
         h,
         x: Math.min(Math.max(-w + 120, win.x), vw - 120),
-        y: Math.min(Math.max(0, win.y), vh - TASKBAR_H - 44),
+        y: Math.min(Math.max(0, win.y), vh - TASKBAR_H - 32),
       });
     };
     window.addEventListener("resize", on);
@@ -153,60 +152,63 @@ export function WindowFrame({
     ? { left: 0, top: 0, width: "100%", height: `calc(100% - ${TASKBAR_H}px)` }
     : { left: win.x, top: win.y, width: win.w, height: win.h };
 
+  const radius = win.maximized ? "0" : "var(--radius-title) var(--radius-title) 0 0";
+
   return (
     <>
       {snapHint !== "none" && <SnapPreview kind={snapHint} />}
       <section
-        className="anim-win absolute flex flex-col overflow-hidden"
+        className="anim-win absolute flex flex-col"
         style={{
           ...geom,
           zIndex: win.z,
-          borderRadius: win.maximized ? 0 : "var(--radius-win)",
-          border: `1px solid ${active ? "var(--stroke-strong)" : "var(--stroke)"}`,
-          boxShadow: active ? "var(--shadow-window)" : "0 14px 30px rgba(0,0,0,.34)",
-          background: "var(--mica)",
-          backdropFilter: "blur(48px) saturate(160%)",
-          WebkitBackdropFilter: "blur(48px) saturate(160%)",
+          borderRadius: radius,
+          background: active ? "var(--frame)" : "var(--frame-inactive)",
+          padding: win.maximized ? 0 : `0 var(--frame-w) var(--frame-w)`,
+          boxShadow: "var(--shadow-win)",
         }}
         onPointerDown={() => focus(win.id)}
         aria-label={win.title}
       >
-        {/* title bar */}
+        {/* ---- title bar ---- */}
         <header
-          className="flex h-8 shrink-0 items-center justify-between pl-3 select-none"
-          style={{ touchAction: "none", opacity: active ? 1 : 0.68 }}
+          className="flex shrink-0 items-center gap-1.5 pl-1 pr-1"
+          style={{
+            height: 28,
+            background: active ? "var(--title-active)" : "var(--title-inactive)",
+            borderRadius: win.maximized ? 0 : "var(--radius-title) var(--radius-title) 0 0",
+            touchAction: "none",
+          }}
           onPointerDown={onTitlePointerDown}
           onPointerMove={onTitlePointerMove}
           onPointerUp={endDrag}
           onPointerCancel={endDrag}
           onDoubleClick={() => toggleMax(win.id)}
         >
-          <div className="flex min-w-0 items-center gap-2">
-            <span className="grid h-4 w-4 place-items-center">{icon}</span>
-            <span className="truncate text-[12px]" style={{ color: "var(--text-secondary)" }}>
-              {win.title}
-            </span>
-          </div>
-          <div data-caption className="flex h-8 items-stretch">
+          <span className="grid h-4 w-4 shrink-0 place-items-center">{icon}</span>
+          <span
+            className="title-text truncate text-[12px]"
+            style={{ color: active ? "var(--title-text)" : "var(--title-text-inactive)" }}
+          >
+            {win.title}
+          </span>
+          <span className="ml-auto flex items-center gap-[2px]" data-caption>
             <CaptionButton label="Minimize" onClick={() => minimize(win.id)}>
-              <IconMin />
+              <CaptionMin />
             </CaptionButton>
             <CaptionButton label={win.maximized ? "Restore" : "Maximize"} onClick={() => toggleMax(win.id)}>
-              {win.maximized ? <IconRestore /> : <IconMax />}
+              {win.maximized ? <CaptionRestore /> : <CaptionMax />}
             </CaptionButton>
             <CaptionButton label="Close" danger onClick={() => close(win.id)}>
-              <IconClose />
+              <CaptionClose />
             </CaptionButton>
-          </div>
+          </span>
         </header>
 
-        {/* body */}
+        {/* ---- body ---- */}
         <div
-          className="scroll-fluent min-h-0 flex-1 overflow-auto"
-          style={{
-            background: "var(--surface-1)",
-            borderTop: "1px solid var(--divider)",
-          }}
+          className="scroll-xp min-h-0 flex-1 overflow-auto"
+          style={{ background: "var(--face)", color: "var(--text)" }}
         >
           {children}
         </div>
@@ -228,6 +230,7 @@ export function WindowFrame({
   );
 }
 
+/** XP caption button: a small glossy square, red for close. */
 function CaptionButton({
   children,
   onClick,
@@ -245,16 +248,7 @@ function CaptionButton({
       aria-label={label}
       title={label}
       onClick={onClick}
-      className="grid w-[46px] place-items-center transition-colors"
-      style={{ color: "var(--text-secondary)" }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.background = danger ? "#c42b1c" : "var(--stroke)";
-        e.currentTarget.style.color = danger ? "#fff" : "var(--text-primary)";
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.background = "transparent";
-        e.currentTarget.style.color = "var(--text-secondary)";
-      }}
+      className={`caption-btn ${danger ? "caption-btn--close" : ""}`}
     >
       {children}
     </button>
@@ -262,20 +256,18 @@ function CaptionButton({
 }
 
 function SnapPreview({ kind }: { kind: Snap }) {
-  // Only ever rendered mid-drag, so the browser geometry is available here.
   const box = snapRect(kind, window.innerWidth, window.innerHeight);
   return (
     <div
-      className="pointer-events-none absolute rounded-lg transition-all duration-150"
+      className="pointer-events-none absolute transition-all duration-150"
       style={{
-        left: box.x + 8,
-        top: box.y + 8,
-        width: box.w - 16,
-        height: box.h - 16,
+        left: box.x + 6,
+        top: box.y + 6,
+        width: box.w - 12,
+        height: box.h - 12,
         zIndex: 5,
-        background: "rgba(255,255,255,.10)",
-        border: "1px solid rgba(255,255,255,.28)",
-        backdropFilter: "blur(6px)",
+        background: "rgba(255,255,255,.22)",
+        border: "2px solid rgba(255,255,255,.75)",
       }}
     />
   );

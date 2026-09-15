@@ -90,7 +90,7 @@ export function AreaChart({
           {ticks.map((t, i) => (
             <g key={i}>
               <line x1={padL} x2={w - padR} y1={y(t)} y2={y(t)} stroke="var(--grid)" strokeWidth="1" />
-              <text x={padL - 10} y={y(t) + 4} textAnchor="end" fontSize="10.5" fill="var(--text-muted)" className="tabular">
+              <text x={padL - 10} y={y(t) + 4} textAnchor="end" fontSize="10.5" fill="var(--text-faint)" className="tabular">
                 {fmtValue(t)}
               </text>
             </g>
@@ -100,12 +100,12 @@ export function AreaChart({
           <path d={line} fill="none" stroke={color} strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
 
           {/* last point carries a direct label; no number on every point */}
-          <circle cx={x(data.length - 1)} cy={y(last.v)} r="4" fill={color} stroke="var(--surface-1)" strokeWidth="2" />
+          <circle cx={x(data.length - 1)} cy={y(last.v)} r="4" fill={color} stroke="var(--content)" strokeWidth="2" />
 
           {[0, 0.5, 1].map((f) => {
             const i = Math.round(f * (data.length - 1));
             return (
-              <text key={f} x={x(i)} y={height - 7} textAnchor={f === 0 ? "start" : f === 1 ? "end" : "middle"} fontSize="10.5" fill="var(--text-muted)">
+              <text key={f} x={x(i)} y={height - 7} textAnchor={f === 0 ? "start" : f === 1 ? "end" : "middle"} fontSize="10.5" fill="var(--text-faint)">
                 {fmtTime(data[i].t)}
               </text>
             );
@@ -113,8 +113,8 @@ export function AreaChart({
 
           {hp && idx != null && (
             <g>
-              <line x1={x(idx)} x2={x(idx)} y1={padT} y2={padT + ih} stroke="var(--stroke-strong)" strokeWidth="1" strokeDasharray="3 3" />
-              <circle cx={x(idx)} cy={y(hp.v)} r="5" fill={color} stroke="var(--surface-1)" strokeWidth="2" />
+              <line x1={x(idx)} x2={x(idx)} y1={padT} y2={padT + ih} stroke="#b9b5a4" strokeWidth="1" strokeDasharray="3 3" />
+              <circle cx={x(idx)} cy={y(hp.v)} r="5" fill={color} stroke="var(--content)" strokeWidth="2" />
             </g>
           )}
         </svg>
@@ -122,7 +122,7 @@ export function AreaChart({
 
       {hp && idx != null && (
         <Tooltip left={x(idx)} top={y(hp.v)} width={w}>
-          <div className="text-[11px]" style={{ color: "var(--text-muted)" }}>{fmtTime(hp.t)}</div>
+          <div className="text-[11px]" style={{ color: "var(--text-faint)" }}>{fmtTime(hp.t)}</div>
           <div className="tabular text-[13px] font-semibold">{fmtValue(hp.v)}</div>
         </Tooltip>
       )}
@@ -170,7 +170,7 @@ export function BarChart({
             return (
               <g key={f}>
                 <line x1={padL} x2={w - padR} y1={yy} y2={yy} stroke="var(--grid)" strokeWidth="1" />
-                <text x={padL - 10} y={yy + 4} textAnchor="end" fontSize="10.5" fill="var(--text-muted)" className="tabular">
+                <text x={padL - 10} y={yy + 4} textAnchor="end" fontSize="10.5" fill="var(--text-faint)" className="tabular">
                   {fmtValue(v)}
                 </text>
               </g>
@@ -194,7 +194,7 @@ export function BarChart({
             );
           })}
           {[0, data.length - 1].map((i, k) => (
-            <text key={k} x={padL + i * slot + slot / 2} y={height - 6} textAnchor={k ? "end" : "start"} fontSize="10.5" fill="var(--text-muted)">
+            <text key={k} x={padL + i * slot + slot / 2} y={height - 6} textAnchor={k ? "end" : "start"} fontSize="10.5" fill="var(--text-faint)">
               {fmtTime(data[i].t)}
             </text>
           ))}
@@ -202,7 +202,7 @@ export function BarChart({
       )}
       {hover != null && (
         <Tooltip left={padL + hover * slot + slot / 2} top={padT + ih - (data[hover].v / hi) * ih} width={w}>
-          <div className="text-[11px]" style={{ color: "var(--text-muted)" }}>{fmtTime(data[hover].t)}</div>
+          <div className="text-[11px]" style={{ color: "var(--text-faint)" }}>{fmtTime(data[hover].t)}</div>
           <div className="tabular text-[13px] font-semibold">{fmtValue(data[hover].v)}</div>
         </Tooltip>
       )}
@@ -267,10 +267,10 @@ export function Donut({
         </g>
         {centerValue && (
           <>
-            <text x={c} y={c - 2} textAnchor="middle" fontSize="19" fontWeight="600" fill="var(--text-primary)" className="tabular">
+            <text x={c} y={c - 2} textAnchor="middle" fontSize="19" fontWeight="600" fill="var(--text)" className="tabular">
               {centerValue}
             </text>
-            <text x={c} y={c + 16} textAnchor="middle" fontSize="10.5" fill="var(--text-muted)">
+            <text x={c} y={c + 16} textAnchor="middle" fontSize="10.5" fill="var(--text-faint)">
               {centerLabel}
             </text>
           </>
@@ -288,7 +288,7 @@ export function Donut({
           >
             <span className="flex items-center gap-2.5">
               <span className="h-2.5 w-2.5 shrink-0 rounded-[3px]" style={{ background: s.color }} />
-              <span style={{ color: "var(--text-secondary)" }}>{s.label}</span>
+              <span style={{ color: "var(--text-dim)" }}>{s.label}</span>
             </span>
             <span className="tabular font-medium">{s.value}%</span>
           </li>
@@ -323,9 +323,9 @@ function Tooltip({ left, top, width, children }: { left: number; top: number; wi
         left: flip ? left - 12 : left + 12,
         top: Math.max(0, top - 34),
         transform: flip ? "translateX(-100%)" : undefined,
-        background: "var(--surface-3)",
-        border: "1px solid var(--stroke-strong)",
-        boxShadow: "var(--shadow-flyout)",
+        background: "var(--content-alt)",
+        border: "1px solid #b9b5a4",
+        boxShadow: "var(--shadow-menu)",
         whiteSpace: "nowrap",
       }}
     >

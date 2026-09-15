@@ -30,7 +30,7 @@ export default function TerminalApp() {
   const snap = useMemo(() => (bucket ? snapshot(bucket) : null), [bucket]);
   const feed = useMemo(() => (bucket ? recentPayouts(bucket, 6) : []), [bucket]);
 
-  if (!now || !snap) return <AppShell><div style={{ color: "var(--text-muted)" }}>Connecting to cluster…</div></AppShell>;
+  if (!now || !snap) return <AppShell><div style={{ color: "var(--text-faint)" }}>Connecting to cluster…</div></AppShell>;
 
   const fmtTime = (t: number) =>
     range === "1H" || range === "24H"
@@ -38,17 +38,17 @@ export default function TerminalApp() {
       : new Date(t).toLocaleDateString("en-GB", { day: "numeric", month: "short" });
 
   return (
-    <AppShell className="space-y-4">
+    <AppShell className="space-y-2.5">
       {/* identity strip */}
       <div className="flex flex-wrap items-center gap-3">
         <IconTerminalApp size={38} />
         <div className="mr-auto">
           <div className="flex items-center gap-2">
-            <h1 className="text-[16px] font-semibold leading-tight">Microstock</h1>
+            <h1 className="text-[13px] font-semibold leading-tight">Microstock</h1>
             <Badge tone="accent">${TOKEN.symbol}</Badge>
             <Badge>{TOKEN.chain}</Badge>
           </div>
-          <div className="text-[12px]" style={{ color: "var(--text-muted)" }}>
+          <div className="text-[11px]" style={{ color: "var(--text-faint)" }}>
             1% of every trade is streamed straight to holders · settled every 5 minutes
           </div>
         </div>
@@ -57,14 +57,14 @@ export default function TerminalApp() {
 
       {/* hero + stats */}
       <div className="grid gap-4 lg:grid-cols-[minmax(280px,1fr)_minmax(320px,1.15fr)]">
-        <Panel className="flex flex-col justify-between gap-4">
+        <Panel className="flex flex-col" bodyClass="flex flex-1 flex-col justify-between gap-3">
           <Hero
             label="Total paid out to holders"
             value={usd(snap.totalPaidOut)}
             accent="var(--good)"
             sub={
               <>
-                <span className="tabular font-semibold" style={{ color: "var(--text-primary)" }}>
+                <span className="tabular font-semibold" style={{ color: "var(--text)" }}>
                   {usd(snap.paidOut24h)}
                 </span>{" "}
                 in the last 24 hours · about{" "}
@@ -119,14 +119,14 @@ export default function TerminalApp() {
             height={228}
           />
         ) : (
-          <div className="scroll-fluent max-h-[228px] overflow-auto">
+          <div className="scroll-xp max-h-[228px] overflow-auto">
             <Table head={["Time", "Price"]}>
               {data
                 .slice()
                 .reverse()
                 .map((d) => (
-                  <tr key={d.t} style={{ borderBottom: "1px solid var(--divider)" }}>
-                    <td className="px-3 py-1.5" style={{ color: "var(--text-secondary)" }}>
+                  <tr key={d.t} style={{ borderBottom: "1px solid #e2e0d4" }}>
+                    <td className="px-3 py-1.5" style={{ color: "var(--text-dim)" }}>
                       {new Date(d.t).toLocaleString("en-GB", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" })}
                     </td>
                     <td className="tabular px-3 py-1.5">${d.v.toFixed(6)}</td>
@@ -140,23 +140,23 @@ export default function TerminalApp() {
       {/* strip of three */}
       <div className="grid gap-3 md:grid-cols-3">
         <Panel title="Next distribution">
-          <div className="tabular text-[30px] font-semibold leading-none" style={{ color: "var(--accent)" }}>
+          <div className="tabular text-[24px] font-semibold leading-none" style={{ color: "var(--accent)" }}>
             {countdown(snap.nextEpoch - now)}
           </div>
-          <div className="mt-2 text-[12px]" style={{ color: "var(--text-muted)" }}>
+          <div className="mt-2 text-[11px]" style={{ color: "var(--text-faint)" }}>
             Rewards accrue per block and settle on a 5-minute epoch. No claiming window, no lockup.
           </div>
         </Panel>
 
         <Panel title="Fee split">
-          <ul className="space-y-2 text-[12.5px]">
+          <ul className="space-y-2 text-[11px]">
             {[
               ["Holders", "100% of the 1% fee", "var(--good)"],
-              ["Team", "0%", "var(--text-muted)"],
-              ["Marketing", "0% — funded by treasury", "var(--text-muted)"],
+              ["Team", "0%", "var(--text-faint)"],
+              ["Marketing", "0% — funded by treasury", "var(--text-faint)"],
             ].map(([k, v, c]) => (
               <li key={k} className="flex items-center justify-between gap-3">
-                <span style={{ color: "var(--text-secondary)" }}>{k}</span>
+                <span style={{ color: "var(--text-dim)" }}>{k}</span>
                 <span className="tabular font-medium" style={{ color: c }}>{v}</span>
               </li>
             ))}
@@ -166,10 +166,10 @@ export default function TerminalApp() {
         <Panel title="Latest payouts" hint={<button className="hover:underline" onClick={() => open("payouts")}>Open</button>}>
           <ul className="space-y-1.5">
             {feed.map((p) => (
-              <li key={p.id} className="anim-row flex items-center justify-between gap-3 text-[12px]">
-                <span className="font-mono" style={{ color: "var(--text-muted)" }}>{shortAddr(p.addr)}</span>
+              <li key={p.id} className="anim-row flex items-center justify-between gap-3 text-[11px]">
+                <span className="font-mono" style={{ color: "var(--text-faint)" }}>{shortAddr(p.addr)}</span>
                 <span className="tabular font-medium" style={{ color: "var(--good)" }}>+{usd(p.usd)}</span>
-                <span className="tabular w-14 text-right" style={{ color: "var(--text-muted)" }}>{ago(now - p.t)}</span>
+                <span className="tabular w-14 text-right" style={{ color: "var(--text-faint)" }}>{ago(now - p.t)}</span>
               </li>
             ))}
           </ul>

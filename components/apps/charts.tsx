@@ -25,15 +25,15 @@ export default function ChartsApp() {
   const vol = useMemo(() => (bucket ? volumeSeries(range, bucket, 44) : []), [bucket, range]);
   const snap = useMemo(() => (bucket ? snapshot(bucket) : null), [bucket]);
 
-  if (!snap) return <AppShell><div style={{ color: "var(--text-muted)" }}>Loading charts…</div></AppShell>;
+  if (!snap) return <AppShell><div style={{ color: "var(--text-faint)" }}>Loading charts…</div></AppShell>;
 
   const fmtTime = (t: number) =>
     range === "24H" ? clockTime(new Date(t)) : new Date(t).toLocaleDateString("en-GB", { day: "numeric", month: "short" });
 
   return (
-    <AppShell className="space-y-4">
+    <AppShell className="space-y-2.5">
       <div className="flex flex-wrap items-center gap-3">
-        <h1 className="mr-auto text-[15px] font-semibold">${TOKEN.symbol} market</h1>
+        <h1 className="mr-auto text-[13px] font-semibold">${TOKEN.symbol} market</h1>
         <Segmented value={range} onChange={setRange} options={RANGES} />
       </div>
 

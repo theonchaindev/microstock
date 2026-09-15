@@ -24,10 +24,10 @@ import ChartsApp from "./charts";
 import HoldersApp from "./holders";
 import ExplorerApp from "./explorer";
 import NotepadApp from "./notepad";
-import EdgeApp from "./edge";
+import BrowserApp from "./edge";
 import TaskManagerApp from "./taskmgr";
 import CmdApp from "./cmd";
-import SettingsApp from "./settings";
+import ControlPanelApp from "./settings";
 import RecycleApp from "./recycle";
 
 type AppComponent = ComponentType<{ payload?: string }>;
@@ -41,10 +41,10 @@ export const REGISTRY: Record<AppId, Entry> = {
   holders: { Component: HoldersApp, Icon: IconHolders },
   explorer: { Component: ExplorerApp, Icon: IconFolder },
   notepad: { Component: NotepadApp, Icon: IconNotepad },
-  edge: { Component: EdgeApp, Icon: IconGlobe },
+  edge: { Component: BrowserApp, Icon: IconGlobe },
   taskmgr: { Component: TaskManagerApp, Icon: IconActivity },
   cmd: { Component: CmdApp, Icon: IconCmd },
-  settings: { Component: SettingsApp, Icon: IconGear },
+  settings: { Component: ControlPanelApp, Icon: IconGear },
   recycle: { Component: RecycleApp, Icon: IconRecycle },
 };
 

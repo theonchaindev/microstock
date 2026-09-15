@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { AreaChart } from "@/components/ui/charts";
-import { AppShell, Badge, Panel, Segmented, Stat, Table } from "@/components/ui/kit";
+import { AppShell, Badge, Panel, Stat, Table } from "@/components/ui/kit";
 import { useRafNow } from "@/components/os/system";
 import { paidOutRange, snapshot } from "@/lib/market";
 import { clockTime, compactUsd, num, usd } from "@/lib/format";
@@ -39,7 +39,7 @@ export default function TaskManagerApp() {
     });
   }, [bucket]);
 
-  if (!now || !snap) return <AppShell><div style={{ color: "var(--text-muted)" }}>Starting Task Manager…</div></AppShell>;
+  if (!now || !snap) return <AppShell><div style={{ color: "var(--text-faint)" }}>Starting Task Manager…</div></AppShell>;
 
   const rows = PROCESSES.map((p, i) => ({
     ...p,
@@ -49,28 +49,41 @@ export default function TaskManagerApp() {
   const totalCpu = rows.reduce((a, r) => a + r.cpu, 0);
 
   return (
-    <AppShell className="space-y-4">
-      <div className="flex items-center gap-3">
-        <h1 className="mr-auto text-[15px] font-semibold">Task Manager</h1>
-        <Segmented
-          value={tab}
-          onChange={setTab}
-          options={[
-            { value: "processes" as const, label: "Processes" },
-            { value: "performance" as const, label: "Performance" },
-          ]}
-        />
+    <AppShell className="space-y-2.5">
+      {/* XP tab strip */}
+      <div className="flex items-end gap-[2px] pl-1" style={{ marginBottom: -1 }}>
+        {(["processes", "performance"] as const).map((t) => {
+          const on = t === tab;
+          return (
+            <button
+              key={t}
+              onClick={() => setTab(t)}
+              className="px-3 pb-1 pt-1.5 text-[11px] capitalize"
+              style={{
+                background: on ? "var(--content)" : "linear-gradient(180deg,#fbfaf4,#e8e6d9)",
+                border: "1px solid #a0a0a0",
+                borderBottom: on ? "1px solid var(--content)" : "1px solid #a0a0a0",
+                borderRadius: "3px 3px 0 0",
+                fontWeight: on ? 700 : 400,
+                position: "relative",
+                zIndex: on ? 2 : 1,
+              }}
+            >
+              {t}
+            </button>
+          );
+        })}
       </div>
 
       {tab === "processes" ? (
         <Panel pad={false} className="overflow-hidden">
-          <div className="scroll-fluent max-h-[420px] overflow-auto">
+          <div className="scroll-xp max-h-[420px] overflow-auto">
             <Table head={["Name", "Status", "CPU", "Memory", "Network"]}>
               {rows.map((r) => (
-                <tr key={r.name} style={{ borderBottom: "1px solid var(--divider)", opacity: r.dead ? 0.45 : 1 }}>
+                <tr key={r.name} style={{ borderBottom: "1px solid #e2e0d4", opacity: r.dead ? 0.45 : 1 }}>
                   <td className="px-3 py-2">
-                    <div className="font-mono text-[12px]">{r.name}</div>
-                    <div className="text-[11px]" style={{ color: "var(--text-muted)" }}>{r.desc}</div>
+                    <div className="font-mono text-[11px]">{r.name}</div>
+                    <div className="text-[11px]" style={{ color: "var(--text-faint)" }}>{r.desc}</div>
                   </td>
                   <td className="px-3 py-2">
                     {r.dead ? <Badge>Terminated</Badge> : r.critical ? <Badge tone="good">Critical</Badge> : <Badge tone="accent">Running</Badge>}
@@ -78,13 +91,13 @@ export default function TaskManagerApp() {
                   <td className="tabular px-3 py-2">
                     <Meter value={r.cpu} max={30} label={`${r.cpu.toFixed(1)}%`} />
                   </td>
-                  <td className="tabular px-3 py-2" style={{ color: "var(--text-secondary)" }}>{r.mem} MB</td>
-                  <td className="tabular px-3 py-2" style={{ color: "var(--text-secondary)" }}>{r.net.toFixed(1)} Mbps</td>
+                  <td className="tabular px-3 py-2" style={{ color: "var(--text-dim)" }}>{r.mem} MB</td>
+                  <td className="tabular px-3 py-2" style={{ color: "var(--text-dim)" }}>{r.net.toFixed(1)} Mbps</td>
                 </tr>
               ))}
             </Table>
           </div>
-          <div className="flex items-center justify-between border-t px-4 py-2 text-[11.5px]" style={{ borderColor: "var(--divider)", color: "var(--text-muted)" }}>
+          <div className="flex items-center justify-between border-t px-4 py-2 text-[11px]" style={{ borderColor: "#e2e0d4", color: "var(--text-faint)" }}>
             <span className="tabular">{rows.filter((r) => !r.dead).length} processes</span>
             <span className="tabular">CPU {totalCpu.toFixed(1)}% · Memory 1,190 MB</span>
           </div>
@@ -117,10 +130,10 @@ function Meter({ value, max, label }: { value: number; max: number; label: strin
   const pct = Math.min(100, (value / max) * 100);
   return (
     <div className="flex items-center gap-2">
-      <div className="h-1.5 w-16 overflow-hidden rounded-full" style={{ background: "var(--surface-3)" }}>
+      <div className="h-1.5 w-16 overflow-hidden rounded-full" style={{ background: "var(--content-alt)" }}>
         <div className="h-full rounded-full" style={{ width: `${pct}%`, background: "var(--series-1)" }} />
       </div>
-      <span style={{ color: "var(--text-secondary)" }}>{label}</span>
+      <span style={{ color: "var(--text-dim)" }}>{label}</span>
     </div>
   );
 }

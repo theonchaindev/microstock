@@ -16,12 +16,12 @@ export default function RecycleApp() {
   const [emptied, setEmptied] = useState(false);
 
   return (
-    <AppShell className="space-y-4">
+    <AppShell className="space-y-2.5">
       <div className="flex flex-wrap items-center gap-3">
         <IconRecycle size={40} />
         <div className="mr-auto">
-          <h1 className="text-[15px] font-semibold">Recycle Bin</h1>
-          <p className="text-[12px]" style={{ color: "var(--text-muted)" }}>
+          <h1 className="text-[13px] font-semibold">Recycle Bin</h1>
+          <p className="text-[11px]" style={{ color: "var(--text-faint)" }}>
             {emptied ? "Empty. A clean portfolio is a happy portfolio." : `${JUNK.length} items · everything else you aped into`}
           </p>
         </div>
@@ -32,25 +32,25 @@ export default function RecycleApp() {
         <Panel className="grid place-items-center py-14 text-center">
           <div>
             <IconRecycle size={64} />
-            <p className="mt-3 text-[13px]" style={{ color: "var(--text-secondary)" }}>This folder is empty</p>
-            <p className="mt-1 text-[11.5px]" style={{ color: "var(--text-muted)" }}>Hold something that pays you instead.</p>
+            <p className="mt-3 text-[11px]" style={{ color: "var(--text-dim)" }}>This folder is empty</p>
+            <p className="mt-1 text-[11px]" style={{ color: "var(--text-faint)" }}>Hold something that pays you instead.</p>
           </div>
         </Panel>
       ) : (
         <Panel pad={false} className="overflow-hidden">
           <Table head={["Name", "Deleted", "Size", "Reason"]}>
             {JUNK.map((j) => (
-              <tr key={j.name} style={{ borderBottom: "1px solid var(--divider)" }}>
-                <td className="px-3 py-2 font-mono text-[11.5px]">{j.name}</td>
-                <td className="tabular px-3 py-2" style={{ color: "var(--text-muted)" }}>{j.deleted}</td>
-                <td className="tabular px-3 py-2" style={{ color: "var(--text-muted)" }}>{j.size}</td>
-                <td className="px-3 py-2" style={{ color: "var(--text-secondary)" }}>{j.note}</td>
+              <tr key={j.name} style={{ borderBottom: "1px solid #e2e0d4" }}>
+                <td className="px-3 py-2 font-mono text-[11px]">{j.name}</td>
+                <td className="tabular px-3 py-2" style={{ color: "var(--text-faint)" }}>{j.deleted}</td>
+                <td className="tabular px-3 py-2" style={{ color: "var(--text-faint)" }}>{j.size}</td>
+                <td className="px-3 py-2" style={{ color: "var(--text-dim)" }}>{j.note}</td>
               </tr>
             ))}
           </Table>
           <div className="px-4 py-3">
             <Badge>Satire</Badge>{" "}
-            <span className="text-[11.5px]" style={{ color: "var(--text-muted)" }}>
+            <span className="text-[11px]" style={{ color: "var(--text-faint)" }}>
               Fictional filenames. No real project is being named here.
             </span>
           </div>

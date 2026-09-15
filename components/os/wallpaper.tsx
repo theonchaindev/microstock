@@ -3,152 +3,154 @@
 import { memo } from "react";
 import type { Wallpaper } from "./system";
 
-/**
- * Windows-11-style bloom: soft translucent ribbons fanned around a bright
- * core. Deliberately abstract — shapes stay wide and low-opacity so they read
- * as light rather than as petals.
- */
-function Bloom() {
-  const ribbons = Array.from({ length: 7 }, (_, i) => ({
-    rot: (360 / 7) * i + 18,
-    rx: 320 + ((i * 5) % 3) * 72,
-    ry: 76 + ((i * 3) % 4) * 20,
-    op: 0.24 + ((i * 2) % 3) * 0.07,
-  }));
+/** Bliss: the green hill and the big blue sky. */
+function Bliss() {
+  // Each cloud is a little cluster of puffs so it reads as cumulus, not fog.
+  const clouds = [
+    { x: 300, y: 210, s: 1.0, o: 0.92 },
+    { x: 700, y: 140, s: 0.7, o: 0.7 },
+    { x: 1080, y: 205, s: 1.15, o: 0.85 },
+    { x: 1460, y: 150, s: 0.65, o: 0.6 },
+    { x: 560, y: 320, s: 0.55, o: 0.45 },
+    { x: 1260, y: 345, s: 0.7, o: 0.4 },
+  ];
+  const puffs = [
+    [-120, 16, 92, 34],
+    [-40, -10, 74, 46],
+    [38, 6, 84, 38],
+    [118, 20, 70, 28],
+  ] as const;
+
   return (
     <svg viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" className="absolute inset-0 h-full w-full">
       <defs>
-        <radialGradient id="bloom-sky" cx="50%" cy="46%" r="76%">
-          <stop offset="0" stopColor="#123f74" />
-          <stop offset="0.5" stopColor="#0a2444" />
-          <stop offset="1" stopColor="#040d1c" />
-        </radialGradient>
-        <linearGradient id="bloom-ribbon" x1="0" y1="0.1" x2="1" y2="0.9">
-          <stop offset="0" stopColor="#a86bff" />
-          <stop offset="0.42" stopColor="#3aa6ff" />
-          <stop offset="1" stopColor="#36efd9" />
+        <linearGradient id="bliss-sky" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#1150b4" />
+          <stop offset="0.3" stopColor="#3d84d6" />
+          <stop offset="0.55" stopColor="#7fb8e8" />
+          <stop offset="0.72" stopColor="#c9e3f6" />
         </linearGradient>
-        <radialGradient id="bloom-core" cx="50%" cy="50%" r="50%">
-          <stop offset="0" stopColor="#eaf7ff" stopOpacity="0.92" />
-          <stop offset="0.3" stopColor="#6fc4ff" stopOpacity="0.45" />
-          <stop offset="1" stopColor="#4aa8ff" stopOpacity="0" />
-        </radialGradient>
-        <radialGradient id="bloom-vignette" cx="50%" cy="48%" r="62%">
-          <stop offset="0.45" stopColor="#040d1c" stopOpacity="0" />
-          <stop offset="1" stopColor="#030914" stopOpacity="0.9" />
-        </radialGradient>
-        <filter id="bloom-soft" x="-25%" y="-45%" width="150%" height="190%">
-          <feGaussianBlur stdDeviation="17" />
+        <linearGradient id="bliss-hill" x1="0.1" y1="0" x2="0.4" y2="1">
+          <stop offset="0" stopColor="#a5d95c" />
+          <stop offset="0.22" stopColor="#74bd3c" />
+          <stop offset="0.6" stopColor="#4d9427" />
+          <stop offset="1" stopColor="#2c6416" />
+        </linearGradient>
+        <linearGradient id="bliss-ridge" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#bce473" />
+          <stop offset="1" stopColor="#7cbb44" />
+        </linearGradient>
+        <filter id="bliss-cloud" x="-60%" y="-160%" width="220%" height="420%">
+          <feGaussianBlur stdDeviation="11" />
+        </filter>
+        <filter id="bliss-edge" x="-5%" y="-10%" width="110%" height="130%">
+          <feGaussianBlur stdDeviation="1.6" />
         </filter>
       </defs>
 
-      <rect width="1600" height="900" fill="url(#bloom-sky)" />
-      <g transform="translate(810 440)" filter="url(#bloom-soft)">
-        {ribbons.map((r, i) => (
-          <ellipse
-            key={i}
-            rx={r.rx}
-            ry={r.ry}
-            cx={r.rx * 0.5}
-            fill="url(#bloom-ribbon)"
-            opacity={r.op}
-            transform={`rotate(${r.rot})`}
-          />
+      <rect width="1600" height="900" fill="url(#bliss-sky)" />
+
+      <g filter="url(#bliss-cloud)">
+        {clouds.map((c, i) => (
+          <g key={i} transform={`translate(${c.x} ${c.y}) scale(${c.s})`} opacity={c.o}>
+            {puffs.map(([dx, dy, rx, ry], j) => (
+              <ellipse key={j} cx={dx} cy={dy} rx={rx} ry={ry} fill="#ffffff" />
+            ))}
+            <ellipse cx={-10} cy={34} rx={175} ry={20} fill="#ffffff" opacity="0.7" />
+          </g>
         ))}
       </g>
-      <circle cx="810" cy="440" r="250" fill="url(#bloom-core)" />
-      {/* vignette keeps the bloom contained instead of hazing the whole screen */}
-      <rect width="1600" height="900" fill="url(#bloom-vignette)" />
+
+      {/* far ridge, caught by the sun */}
+      <path d="M0 900V646c180-86 430-150 720-138 300 12 500 74 880 56v336z" fill="url(#bliss-ridge)" filter="url(#bliss-edge)" />
+
+      {/* the hill itself: crest a third in, falling away to the right */}
+      <path
+        d="M0 900V690c150-112 360-186 612-184 268 2 456 84 988 56v338z"
+        fill="url(#bliss-hill)"
+        filter="url(#bliss-edge)"
+      />
+
+      {/* soft highlight along the crest */}
+      <path
+        d="M78 688c142-96 332-156 560-156-224 22-408 78-560 156z"
+        fill="#d2f099"
+        opacity="0.5"
+        filter="url(#bliss-edge)"
+      />
     </svg>
   );
 }
 
-function Aurora() {
+/** Azul: XP's blue satin abstract. */
+function Azul() {
   return (
     <svg viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" className="absolute inset-0 h-full w-full">
       <defs>
-        <linearGradient id="au-bg" x1="0" y1="0" x2="0.4" y2="1">
-          <stop offset="0" stopColor="#0a0f1e" />
-          <stop offset="1" stopColor="#05070f" />
+        <linearGradient id="azul-bg" x1="0" y1="0" x2="0.3" y2="1">
+          <stop offset="0" stopColor="#0b3d8c" />
+          <stop offset="0.55" stopColor="#1563c4" />
+          <stop offset="1" stopColor="#062a63" />
         </linearGradient>
-        <linearGradient id="au-1" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0" stopColor="#1fd6a4" stopOpacity="0" />
-          <stop offset="0.45" stopColor="#1fd6a4" stopOpacity="0.72" />
-          <stop offset="1" stopColor="#3b7bff" stopOpacity="0" />
+        <linearGradient id="azul-band" x1="0" y1="0" x2="1" y2="0.3">
+          <stop offset="0" stopColor="#ffffff" stopOpacity="0" />
+          <stop offset="0.45" stopColor="#bcdcff" stopOpacity="0.65" />
+          <stop offset="1" stopColor="#ffffff" stopOpacity="0" />
         </linearGradient>
-        <linearGradient id="au-2" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0" stopColor="#7b4dff" stopOpacity="0" />
-          <stop offset="0.5" stopColor="#7b4dff" stopOpacity="0.6" />
-          <stop offset="1" stopColor="#ff6ba8" stopOpacity="0" />
-        </linearGradient>
-        <filter id="au-blur" x="-20%" y="-60%" width="140%" height="260%">
-          <feGaussianBlur stdDeviation="58" />
+        <filter id="azul-soft" x="-20%" y="-60%" width="140%" height="260%">
+          <feGaussianBlur stdDeviation="34" />
         </filter>
       </defs>
-      <rect width="1600" height="900" fill="url(#au-bg)" />
-      <g filter="url(#au-blur)">
-        <path d="M-100 380 C 300 210, 700 470, 1100 280 S 1700 300, 1750 240 L1750 520 C1300 620, 800 420, 300 560 Z" fill="url(#au-1)" />
-        <path d="M-100 560 C 380 460, 640 700, 1080 540 S 1650 560, 1750 500 L1750 760 C1200 840, 700 640, -100 800 Z" fill="url(#au-2)" />
+      <rect width="1600" height="900" fill="url(#azul-bg)" />
+      <g filter="url(#azul-soft)">
+        <path d="M-100 420C260 250 700 520 1100 330s500-120 700-180v300C1500 560 1050 700 700 640 380 586 140 700-100 760z" fill="url(#azul-band)" />
+        <path d="M-100 660C300 560 620 780 1000 690s520-40 700-90v260H-100z" fill="url(#azul-band)" opacity="0.6" />
       </g>
     </svg>
   );
 }
 
-function Grid() {
-  return (
-    <div className="absolute inset-0" style={{ background: "radial-gradient(120% 90% at 50% 0%, #10243c 0%, #070b12 55%, #04060a 100%)" }}>
-      <div
-        className="absolute inset-0 opacity-[0.55]"
-        style={{
-          backgroundImage:
-            "linear-gradient(rgba(76,194,255,.10) 1px, transparent 1px), linear-gradient(90deg, rgba(76,194,255,.10) 1px, transparent 1px)",
-          backgroundSize: "56px 56px",
-          maskImage: "radial-gradient(90% 70% at 50% 40%, #000 30%, transparent 100%)",
-          WebkitMaskImage: "radial-gradient(90% 70% at 50% 40%, #000 30%, transparent 100%)",
-        }}
-      />
-      <div className="absolute inset-x-0 bottom-0 h-1/2" style={{ background: "linear-gradient(to top, rgba(76,194,255,.10), transparent)" }} />
-    </div>
-  );
+/** The flat Windows Classic desktop blue. */
+function ClassicBlue() {
+  return <div className="absolute inset-0" style={{ background: "#3a6ea5" }} />;
 }
 
+/** On-brand: an oversized ticker etched into a dark field. */
 function Ticker() {
   return (
-    <div className="absolute inset-0 overflow-hidden" style={{ background: "linear-gradient(160deg, #0b1220 0%, #060a12 60%, #03050a 100%)" }}>
+    <div className="absolute inset-0 overflow-hidden" style={{ background: "linear-gradient(170deg,#0d2b56 0%,#071a36 60%,#04101f 100%)" }}>
       <div className="absolute inset-0 grid place-items-center">
         <span
-          className="font-mono font-bold leading-none tracking-tighter"
+          className="font-bold leading-none tracking-tighter"
           style={{
-            fontSize: "26vw",
+            fontFamily: "var(--font-title)",
+            fontSize: "24vw",
             color: "transparent",
-            WebkitTextStroke: "1.5px rgba(76,194,255,.16)",
+            WebkitTextStroke: "2px rgba(140,190,255,.2)",
           }}
         >
           $MSFT
         </span>
       </div>
-      <div
-        className="absolute inset-0"
-        style={{ background: "radial-gradient(60% 50% at 50% 55%, rgba(76,194,255,.16), transparent 70%)" }}
-      />
+      <div className="absolute inset-0" style={{ background: "radial-gradient(60% 50% at 50% 52%, rgba(90,160,255,.22), transparent 72%)" }} />
     </div>
   );
 }
 
 export const WALLPAPERS: { id: Wallpaper; label: string }[] = [
-  { id: "bloom", label: "Bloom" },
-  { id: "aurora", label: "Aurora" },
-  { id: "grid", label: "Terminal Grid" },
+  { id: "bliss", label: "Bliss" },
+  { id: "azul", label: "Azul" },
   { id: "ticker", label: "Ticker" },
+  { id: "classic", label: "Windows Classic" },
 ];
 
 export const WallpaperLayer = memo(function WallpaperLayer({ id }: { id: Wallpaper }) {
   return (
     <div className="absolute inset-0 -z-10 overflow-hidden">
-      {id === "bloom" && <Bloom />}
-      {id === "aurora" && <Aurora />}
-      {id === "grid" && <Grid />}
+      {id === "bliss" && <Bliss />}
+      {id === "azul" && <Azul />}
       {id === "ticker" && <Ticker />}
+      {id === "classic" && <ClassicBlue />}
     </div>
   );
 });
