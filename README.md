@@ -35,29 +35,30 @@ button, a `$MSFT` desk band and a system tray.
 
 **Themes** are the four XP shipped with: Luna **Blue**, **Olive Green**,
 **Silver**, and **Windows Classic** (square corners, grey bevels, the lot).
-Wallpapers: Bliss, Azul, Ticker, Windows Classic blue. Both persist in
+Wallpapers: the supplied Microstock photograph (`public/microstock-bg.jpg`,
+the default), Azul, Ticker, Windows Classic blue. Both persist in
 `localStorage`.
 
 ## Stack
 
 Next.js 16 (App Router, Turbopack) · React 19 · TypeScript · Tailwind v4.
-No component library, no chart library, no webfonts, **no bitmap assets at all**
-— the Luna gradients, the 3D bevels, the icons, the Bliss wallpaper and the SVG
-charts are every one of them hand-drawn vector, so the whole thing ships as a
-couple of small bundles. The type stack is Tahoma → Verdana with Trebuchet MS
-on title bars, exactly as XP did it.
+No component library, no chart library and no webfonts — the Luna gradients, the
+3D bevels, the icons and the SVG charts are all hand-drawn vector, so the only
+bitmap the site ships is the desktop photograph. The type stack is
+Tahoma → Verdana with Trebuchet MS on title bars, exactly as XP did it.
 
 ### On the artwork
 
-Microsoft's icon files and the Bliss photograph are their copyrighted assets and
-are not redistributed here. Everything visual is an original recreation drawn to
-match the Luna language: three-quarter perspective, thick soft outlines in a
-darker shade of the fill rather than black, a specular gloss up and to the left,
-saturated gradients, and a soft drop shadow down and to the right. The wallpaper
-is drawn from the photograph's composition — dome cresting a fifth in from the
-left and falling away right, deep blue overhead grading to near-white at the
-horizon, cumulus high with cirrus streaked below, yellow-green along the sunlit
-crest into deep green in the foreground — not copied from it.
+The desktop background is the project's own supplied photograph, in
+`public/microstock-bg.jpg`. It is 547x365, so it is upscaled on a typical
+display — drop a higher-resolution version in at the same path if you have one
+and nothing else needs changing.
+
+Microsoft's icon files are their copyrighted assets and are not redistributed
+here. Every icon is an original recreation drawn to match the Luna language:
+three-quarter perspective, thick soft outlines in a darker shade of the fill
+rather than black, a specular gloss up and to the left, saturated gradients, and
+a soft drop shadow down and to the right.
 
 Every scheme is a set of CSS custom properties in `app/globals.css`; nothing
 downstream hard-codes a colour, which is why swapping to Windows Classic

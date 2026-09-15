@@ -61,7 +61,11 @@ function Shell() {
       <WallpaperLayer id={settings.wallpaper} />
       <DesktopIcons />
 
-      <div data-window-layer className="absolute inset-0">
+      {/*
+        The layer spans the desktop so windows can sit anywhere, so it must not
+        swallow clicks aimed at the icons underneath — each frame opts back in.
+      */}
+      <div data-window-layer className="pointer-events-none absolute inset-0">
         {wins.map((w) => {
           const { Component, Icon } = REGISTRY[w.appId];
           return (

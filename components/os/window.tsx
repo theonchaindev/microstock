@@ -158,7 +158,7 @@ export function WindowFrame({
     <>
       {snapHint !== "none" && <SnapPreview kind={snapHint} />}
       <section
-        className="anim-win absolute flex flex-col"
+        className="anim-win pointer-events-auto absolute flex flex-col"
         style={{
           ...geom,
           zIndex: win.z,

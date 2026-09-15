@@ -24,7 +24,9 @@ export function DesktopIcons() {
         return (
           <button
             key={a.id}
-            onClick={() => setSel(a.id)}
+            // Double-click is the XP gesture, but it is unreliable on touch —
+            // so clicking an already-selected icon opens it too.
+            onClick={() => (on ? open(a.id) : setSel(a.id))}
             onDoubleClick={() => open(a.id)}
             onKeyDown={(e) => e.key === "Enter" && open(a.id)}
             title={`${a.title} - ${a.blurb}`}

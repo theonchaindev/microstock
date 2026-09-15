@@ -160,7 +160,7 @@ export default function ControlPanelApp() {
 }
 
 const THUMB: Record<string, string> = {
-  bliss: "linear-gradient(180deg,#1a58b5 0%,#8ec2ec 52%,#6aa93a 58%,#2f6b18 100%)",
+  microstock: "url(/microstock-bg.jpg) center/cover no-repeat",
   azul: "linear-gradient(150deg,#0b3d8c,#1563c4 55%,#062a63)",
   ticker: "linear-gradient(170deg,#0d2b56,#04101f)",
   classic: "#3a6ea5",

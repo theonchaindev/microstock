@@ -6,7 +6,7 @@ import { useSystem, type Wallpaper } from "./system";
 
 export type MenuPos = { x: number; y: number };
 
-const WALLPAPER_ORDER: Wallpaper[] = ["bliss", "azul", "ticker", "classic"];
+const WALLPAPER_ORDER: Wallpaper[] = ["microstock", "azul", "ticker", "classic"];
 
 export function DesktopContextMenu({ pos, onClose }: { pos: MenuPos; onClose: () => void }) {
   const { open, settings, setSettings } = useSystem();

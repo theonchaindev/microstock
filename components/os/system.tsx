@@ -19,7 +19,7 @@ export type Win = Rect & {
   payload?: string;
 };
 
-export type Wallpaper = "bliss" | "azul" | "ticker" | "classic";
+export type Wallpaper = "microstock" | "azul" | "ticker" | "classic";
 /** The four schemes XP shipped with. */
 export type Theme = "blue" | "olive" | "silver" | "classic";
 
@@ -27,7 +27,7 @@ type Settings = { theme: Theme; wallpaper: Wallpaper };
 
 type State = { wins: Win[]; z: number; seq: number };
 
-export const DEFAULT_SETTINGS: Settings = { theme: "blue", wallpaper: "bliss" };
+export const DEFAULT_SETTINGS: Settings = { theme: "blue", wallpaper: "microstock" };
 
 type Action =
   | { type: "open"; appId: AppId; payload?: string; title?: string }
@@ -140,7 +140,7 @@ type Ctx = {
 
 const SystemContext = createContext<Ctx | null>(null);
 
-const STORE_KEY = "microstock.settings.v2";
+const STORE_KEY = "microstock.settings.v3";
 
 export function SystemProvider({ children }: { children: React.ReactNode }) {
   const [state, dispatch] = useReducer(reducer, { wins: [], z: 10, seq: 1 });
